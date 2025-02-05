@@ -1,5 +1,5 @@
-import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
+import defaultTheme from 'tailwindcss/defaultTheme';
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -14,6 +14,14 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                bubblegum: ['Bubblegum Sans', ...defaultTheme.fontFamily.sans],
+                sintony: ['Sintony', ...defaultTheme.fontFamily.sans],
+                poppins: ['Poppins', ...defaultTheme.fontFamily.sans],
+            },
+            colors: {
+                plumpPurple: '#6f42c1',
+                plumpPurpleDark: '#5f25a6',
+                turquoise: '#4cebfc',
             },
         },
     },
