@@ -1,6 +1,4 @@
 export default function Arrow({ direction = 'right', ...props }) {
-    console.log({ props });
-
     const rotationAngles = {
         right: 0, // Por defecto, apunta a la derecha
         left: 180, // Apunta a la izquierda

@@ -1,5 +1,9 @@
+import ApplicationLogo from '@/Components/ApplicationLogo';
+import Dropdown from '@/Components/Dropdown';
+import NavLink from '@/Components/NavLink';
 import Header from '@/Components/Organisms/Header';
-import { usePage } from '@inertiajs/react';
+import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
+import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
 export default function AuthenticatedLayout({ header, children }) {
@@ -10,7 +14,7 @@ export default function AuthenticatedLayout({ header, children }) {
 
     return (
         <div className="min-h-screen bg-gray-100">
-            {/* <nav className="border-b border-gray-100 bg-white">
+            <nav className="border-b border-gray-100 bg-white">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="flex h-16 justify-between">
                         <div className="flex">
@@ -157,7 +161,7 @@ export default function AuthenticatedLayout({ header, children }) {
                         </div>
                     </div>
                 </div>
-            </nav> */}
+            </nav>
             <Header user={user} />
             {header && (
                 <header className="bg-white shadow">

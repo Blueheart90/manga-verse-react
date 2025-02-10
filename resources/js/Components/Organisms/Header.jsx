@@ -14,7 +14,7 @@ export default function Header({ user }) {
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState(false);
     const [modal, setModal] = useState(false);
-    console.log(user);
+    // console.log(user);
 
     return (
         <header className="bg-plumpPurple">

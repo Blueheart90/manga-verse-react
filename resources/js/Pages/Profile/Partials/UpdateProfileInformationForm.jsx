@@ -1,9 +1,11 @@
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
+import InputAvatar from '@/Components/Molecules/InputAvatar';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Transition } from '@headlessui/react';
 import { Link, useForm, usePage } from '@inertiajs/react';
+import { useState } from 'react';
 
 export default function UpdateProfileInformation({
     mustVerifyEmail,
@@ -11,17 +13,56 @@ export default function UpdateProfileInformation({
     className = '',
 }) {
     const user = usePage().props.auth.user;
+    const [showRemovePreview, setShowRemovePreview] = useState(false);
+    const [selectedImage, setSelectedImage] = useState(null);
 
-    const { data, setData, patch, errors, processing, recentlySuccessful } =
-        useForm({
-            name: user.name,
-            email: user.email,
-        });
+    const {
+        data,
+        setData,
+        patch,
+        post,
+        delete: destroy,
+        errors,
+        processing,
+        recentlySuccessful,
+        progress,
+        reset,
+    } = useForm({
+        name: user.name,
+        email: user.email,
+        photo: null,
+    });
 
     const submit = (e) => {
         e.preventDefault();
+        console.log('enviando', { data, selectedImage });
 
-        patch(route('profile.update'));
+        // Crear un objeto FormData para enviar los datos
+        const formData = new FormData();
+        formData.append('name', data.name);
+        formData.append('email', data.email);
+
+        // Agrega la imagen solo si hay una nueva seleccionada
+        if (selectedImage) {
+            formData.append('photo', selectedImage);
+            console.log('si cambio la imagen');
+        } else {
+            console.log('no cambio la imagen');
+        }
+
+        post(route('profile.update'), {
+            body: formData,
+            forceFormData: true,
+            onSuccess: (page) => {
+                setShowRemovePreview(false);
+            },
+        });
+    };
+
+    const deletePhoto = () => {
+        console.log('eliminado foto', user.id);
+
+        destroy(route('profile.delete.photo'));
     };
 
     return (
@@ -37,6 +78,31 @@ export default function UpdateProfileInformation({
             </header>
 
             <form onSubmit={submit} className="mt-6 space-y-6">
+                <div>
+                    <InputLabel htmlFor="photo" value="Profile Photo" />
+
+                    <InputAvatar
+                        setShowRemovePreview={setShowRemovePreview}
+                        showRemovePreview={showRemovePreview}
+                        // currentAvatar={`../storage/${user.profile_photo_path}`}
+                        currentAvatar={`${user.profile_photo_url}`}
+                        setData={setData}
+                        onImageSelect={(file) => {
+                            setSelectedImage(file);
+                            setData('photo', file);
+                        }}
+                        reset={reset}
+                    />
+                    <button
+                        type="button"
+                        onClick={deletePhoto}
+                        className="mt-2"
+                    >
+                        Eliminar foto
+                    </button>
+
+                    <InputError className="mt-2" message={errors.photo} />
+                </div>
                 <div>
                     <InputLabel htmlFor="name" value="Name" />
 
@@ -102,9 +168,7 @@ export default function UpdateProfileInformation({
                         leave="transition ease-in-out"
                         leaveTo="opacity-0"
                     >
-                        <p className="text-sm text-gray-600">
-                            Saved.
-                        </p>
+                        <p className="text-sm text-gray-600">Saved.</p>
                     </Transition>
                 </div>
             </form>

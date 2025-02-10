@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Http\Request;
+use App\Traits\HasProfilePhoto;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Redirect;
+use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\User;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 class ProfileController extends Controller
 {
@@ -35,8 +38,19 @@ class ProfileController extends Controller
             $request->user()->email_verified_at = null;
         }
 
+        if (isset($request->photo)) {
+            $request->user()->updateProfilePhoto($request->photo);
+        }
+
         $request->user()->save();
 
+        return Redirect::route('profile.edit');
+    }
+
+    // TODO crear función para eliminar imagen
+    public function deletePhoto(Request $request): RedirectResponse
+    {
+        $request->user()->deleteProfilePhoto();
         return Redirect::route('profile.edit');
     }
 

@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -100,9 +99,7 @@ return [
     'key' => env('APP_KEY'),
 
     'previous_keys' => [
-        ...array_filter(
-            explode(',', env('APP_PREVIOUS_KEYS', ''))
-        ),
+        ...array_filter(explode(',', env('APP_PREVIOUS_KEYS', ''))),
     ],
 
     /*
@@ -123,4 +120,16 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Profile Photo Disk
+    |--------------------------------------------------------------------------
+    |
+    | This configuration value determines the default disk that will be used
+    | when storing profile photos for your application's users. Typically
+    | this will be the "public" disk but you may adjust this if needed.
+    |
+    */
+
+    'profile_photo_disk' => 'public',
 ];
