@@ -3,11 +3,9 @@ import Bars from '../Atoms/SvgIcons/Bars';
 import MagnifyingGlass from '../Atoms/SvgIcons/MagnifyingGlass';
 import UserCircle from '../Atoms/SvgIcons/UserCircle';
 import XMark from '../Atoms/SvgIcons/XMark';
-import InputLabel from '../InputLabel';
 import Modal from '../Modal';
 import NavLink from '../NavLink';
-import PrimaryButton from '../PrimaryButton';
-import TextInput from '../TextInput';
+import LoginForm from './LoginForm';
 import SideMenu from './SideMenu';
 
 const navLinks = [
@@ -19,7 +17,7 @@ const navLinks = [
 export default function Header({ user }) {
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState(false);
-    const [modal, setModal] = useState(true);
+    const [modal, setModal] = useState(false);
     // console.log(user);
 
     return (
@@ -104,64 +102,19 @@ export default function Header({ user }) {
             </nav>
             <SideMenu open={open} setOpen={setOpen}></SideMenu>
             <Modal show={modal} onClose={() => setModal(false)} maxWidth="lg">
-                <div className="relative flex flex-col items-center gap-4 overflow-hidden rounded-[20px] bg-white px-14 py-8">
+                <div className="relative flex flex-col items-center gap-4 overflow-hidden rounded-3xl bg-white px-14 py-8">
                     <button
                         onClick={() => {
                             setModal(false);
                         }}
-                        className="absolute right-0 top-0 p-2"
+                        className="absolute right-0 top-0 rounded-bl-3xl p-3 text-plumpPurpleDark hover:bg-turquoise hover:text-white"
                     >
-                        <XMark className="size-6 fill-plumpPurpleDark" />
+                        <XMark className="size-6" />
                     </button>
                     <h5 className="text-xl font-semibold text-plumpPurpleDark">
                         ¡Bienvenido de nuevo!
                     </h5>
-                    <form
-                        action=""
-                        method="post"
-                        className="flex w-full flex-col gap-5 py-6"
-                    >
-                        <div className="flex flex-col">
-                            <InputLabel for="email">Username/Email</InputLabel>
-                            <TextInput
-                                type="text"
-                                id="email"
-                                name="email"
-                                placeholder="pedro@mail.com"
-                            />
-                        </div>
-                        <div className="flex flex-col">
-                            <InputLabel for="password">Contraseña</InputLabel>
-                            <TextInput
-                                type="password"
-                                id="password"
-                                name="password"
-                            />
-                        </div>
-                        <div className="flex justify-between text-xs text-plumpPurpleDark">
-                            <div className="flex items-center gap-2">
-                                <input
-                                    type="checkbox"
-                                    className="rounded border-plumpPurple text-plumpPurpleDark focus:ring-0"
-                                    name="remember"
-                                    id="remember"
-                                />
-                                <label htmlFor="" className="uppercase">
-                                    Recuerdame
-                                </label>
-                            </div>
-                            <a href="" className="text-sm font-semibold">
-                                ¿Olvidaste tu contraseña?
-                            </a>
-                        </div>
-                        <PrimaryButton>Iniciar session</PrimaryButton>
-                    </form>
-                    <div className="text-sm text-plumpPurpleDark">
-                        ¿No tienes cuenta?{' '}
-                        <a href="" className="font-semibold">
-                            Registrate
-                        </a>
-                    </div>
+                    <LoginForm />
                 </div>
             </Modal>
         </header>
