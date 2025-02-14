@@ -1,8 +1,14 @@
 import { useState } from 'react';
+import Avatar from '../Atoms/Avatar';
 import Bars from '../Atoms/SvgIcons/Bars';
+import Bell from '../Atoms/SvgIcons/Bell';
+import Bookmark from '../Atoms/SvgIcons/Bookmark';
+import Glasses from '../Atoms/SvgIcons/Glasses';
+import Logout from '../Atoms/SvgIcons/Logout';
 import MagnifyingGlass from '../Atoms/SvgIcons/MagnifyingGlass';
 import UserCircle from '../Atoms/SvgIcons/UserCircle';
 import XMark from '../Atoms/SvgIcons/XMark';
+import Dropdown from '../Dropdown';
 import Modal from '../Modal';
 import NavLink from '../NavLink';
 import LoginForm from './LoginForm';
@@ -21,8 +27,8 @@ export default function Header({ user }) {
     // console.log(user);
 
     return (
-        <header className="bg-plumpPurple">
-            <nav className="container mx-auto sm:px-5">
+        <header className="mb-5 bg-plumpPurple">
+            <nav>
                 <div className="flex h-[70px] justify-between px-2">
                     <div className="flex">
                         {/* Hamburger */}
@@ -60,7 +66,7 @@ export default function Header({ user }) {
                     <div className="flex items-center gap-2">
                         {/* Search bar */}
                         <div
-                            className={`${search ? 'block' : 'hidden'} fixed inset-x-0 top-[70px] bg-plumpPurple px-4 pb-2 2xl:static 2xl:block 2xl:p-0`}
+                            className={`${search ? 'block' : 'hidden'} fixed inset-x-0 top-[70px] z-[2] bg-plumpPurple px-4 pb-2 2xl:static 2xl:block 2xl:p-0`}
                         >
                             <div className="relative">
                                 <a
@@ -72,7 +78,7 @@ export default function Header({ user }) {
                                 <input
                                     type="text"
                                     name="keyword"
-                                    className="h-10 w-full rounded-[5px] py-[6px] pl-16 pr-10 text-sm"
+                                    className="h-10 w-full rounded-[5px] py-[6px] pl-16 pr-10 text-sm focus:ring-0"
                                     placeholder="Search manga..."
                                 />
                                 <button className="absolute right-2 top-1/2 -translate-y-1/2 transform">
@@ -87,15 +93,64 @@ export default function Header({ user }) {
                             >
                                 <MagnifyingGlass className="size-8 fill-white stroke-white" />
                             </button>
-                            <button
-                                onClick={() => setModal(true)}
-                                className="flex items-center gap-1 rounded-full border-2 border-transparent text-sm transition focus:outline-none"
-                            >
-                                <UserCircle className="size-8 fill-white" />
-                                <span className="hidden text-white 2xl:inline">
-                                    Usuario
-                                </span>
-                            </button>
+                            {user ? (
+                                <div className="relative">
+                                    <Dropdown>
+                                        <Dropdown.Trigger>
+                                            <Avatar
+                                                className="h-10 w-10 border-[3px] border-white"
+                                                src={user.profile_photo_url}
+                                            />
+                                        </Dropdown.Trigger>
+
+                                        <Dropdown.Content>
+                                            <Dropdown.Link
+                                                href={route('profile.edit')}
+                                            >
+                                                <UserCircle />
+                                                Perfil
+                                            </Dropdown.Link>
+                                            <Dropdown.Link
+                                                href={route('profile.edit')}
+                                            >
+                                                <Glasses />
+                                                Continuar leyendo
+                                            </Dropdown.Link>
+                                            <Dropdown.Link
+                                                href={route('profile.edit')}
+                                            >
+                                                <Bookmark />
+                                                Lista de lectura
+                                            </Dropdown.Link>
+                                            <Dropdown.Link
+                                                href={route('profile.edit')}
+                                            >
+                                                <Bell />
+                                                Notificaciones
+                                            </Dropdown.Link>
+                                            <Dropdown.Link
+                                                className="bg-turquoise text-plumpPurpleDark"
+                                                href={route('logout')}
+                                                method="post"
+                                                as="button"
+                                            >
+                                                <Logout />
+                                                Salir
+                                            </Dropdown.Link>
+                                        </Dropdown.Content>
+                                    </Dropdown>
+                                </div>
+                            ) : (
+                                <button
+                                    onClick={() => setModal(true)}
+                                    className="flex items-center gap-1 rounded-full border-2 border-transparent text-sm transition focus:outline-none"
+                                >
+                                    <UserCircle className="size-8 fill-white" />
+                                    <span className="hidden text-white 2xl:inline">
+                                        Usuario
+                                    </span>
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>

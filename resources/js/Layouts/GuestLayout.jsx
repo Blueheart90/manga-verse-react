@@ -2,12 +2,14 @@ import Header from '@/Components/Organisms/Header';
 import { usePage } from '@inertiajs/react';
 
 export default function GuestLayout({ children, className }) {
-    const user = usePage().props.auth.user;
+    const { lastUpdateMangas, popularMangas, recentlyAdded, user } =
+        usePage().props;
     return (
-        <div className="my-auto min-h-screen bg-gray-100">
-            <Header user={user} />
-
-            <main className={` ${className} `}>{children}</main>
+        <div className="min-h-screen bg-plumpPurple">
+            <main className={` ${className} mx-auto max-w-7xl`}>
+                <Header user={user} />
+                {children}
+            </main>
         </div>
     );
 }

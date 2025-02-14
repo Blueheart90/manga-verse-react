@@ -8,7 +8,6 @@ import ResponsiveNavLink from '../ResponsiveNavLink';
 
 export default function SideMenu({ open, setOpen, children }) {
     const { auth } = usePage().props;
-    console.log(auth);
 
     const closeSidebar = () => {
         setOpen(false);
@@ -30,7 +29,7 @@ export default function SideMenu({ open, setOpen, children }) {
         <>
             {/* Fondo oscuro que cubre el contenido principal */}
             <div
-                className={`fixed inset-0 bg-gray-900 bg-opacity-60 ${
+                className={`fixed inset-0 z-50 bg-gray-900 bg-opacity-60 ${
                     open ? 'visible opacity-100' : 'invisible opacity-0'
                 } transition-opacity duration-300 ease-out`}
                 onClick={closeSidebar}
@@ -67,8 +66,8 @@ export default function SideMenu({ open, setOpen, children }) {
                             Home
                         </ResponsiveNavLink>
                         <ResponsiveNavLink
-                            href={route('home')}
-                            // active={route().current('home')}
+                            href={route('profile.edit')}
+                            active={route().current('profile.edit')}
                         >
                             <UserCircle />
                             Perfil
@@ -90,13 +89,13 @@ export default function SideMenu({ open, setOpen, children }) {
                         ) : (
                             <div className="space-y-2">
                                 <ResponsiveNavLink
-                                    className="justify-center bg-plumpPurpleDark text-white"
+                                    className="justify-center hover:border-plumpPurpleDark hover:bg-white"
                                     href={route('login')}
                                 >
                                     Iniciar sesión
                                 </ResponsiveNavLink>
                                 <ResponsiveNavLink
-                                    className="justify-center border border-transparent hover:border-plumpPurpleDark hover:bg-white hover:text-plumpPurpleDark"
+                                    className="justify-center bg-plumpPurpleDark text-white"
                                     href={route('register')}
                                 >
                                     Registro

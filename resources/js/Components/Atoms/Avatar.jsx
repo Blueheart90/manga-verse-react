@@ -7,7 +7,7 @@ export default function Avatar({
     return (
         <img
             className={
-                'h-28 w-28 rounded-full border-2 border-plumpPurpleDark ' +
+                'size-28 rounded-full border-2 border-plumpPurpleDark ' +
                 className
             }
             src={src}

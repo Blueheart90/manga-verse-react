@@ -27,6 +27,9 @@ services:
             - meilisearch
             - mailpit
             - selenium
+        dns:
+            - 8.8.8.8
+            - 1.1.1.1
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
