@@ -34,6 +34,7 @@ class MangaViewModel extends ViewModel
             $coverUrl = $this->getCoverUrl($manga);
             $attributes = [
                 'title' => $this->getTitle($manga),
+                'title-spa' => $this->getTitleSpa($manga),
                 'cover-art' => $coverUrl,
                 'tags' => $this->getTags($manga),
                 'description' => $this->getDescription($manga),
@@ -61,6 +62,18 @@ class MangaViewModel extends ViewModel
         }
 
         return '';
+    }
+
+    private function getTitleSpa(array $mangaAttributes): ?string
+    {
+        $alternativeTitles = collect(
+            $mangaAttributes['attributes']['altTitles']
+        )
+            ->flatMap(fn(array $titles) => $titles)
+            ->all();
+
+        return $alternativeTitles['es'] ??
+            ($alternativeTitles['es-la'] ?? null);
     }
 
     private function getTitle(array $mangaAttributes): string

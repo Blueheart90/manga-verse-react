@@ -1,4 +1,4 @@
-export default function PrimaryButton({
+export default function CallToAction({
     className = '',
     disabled,
     children,
@@ -8,7 +8,7 @@ export default function PrimaryButton({
         <button
             {...props}
             className={
-                `rounded bg-plumpPurpleDark px-4 py-2 uppercase text-white transition duration-150 ease-in-out hover:bg-plumpPurple ${
+                `bg-gold rounded px-4 py-2 uppercase text-black transition duration-150 ease-in-out hover:scale-105 ${
                     disabled && 'opacity-25'
                 } ` + className
             }

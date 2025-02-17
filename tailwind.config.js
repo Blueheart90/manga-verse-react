@@ -22,6 +22,7 @@ export default {
                 plumpPurple: '#6f42c1',
                 plumpPurpleDark: '#5f25a6',
                 turquoise: '#4cebfc',
+                gold: '#ffd702',
             },
         },
     },
