@@ -1,3 +1,5 @@
+import { twMerge } from 'tailwind-merge';
+
 export default function CallToAction({
     className = '',
     disabled,
@@ -6,13 +8,13 @@ export default function CallToAction({
 }) {
     return (
         <button
-            {...props}
-            className={
-                `bg-gold rounded px-4 py-2 uppercase text-black transition duration-150 ease-in-out hover:scale-105 ${
-                    disabled && 'opacity-25'
-                } ` + className
-            }
+            className={twMerge(
+                'rounded bg-gold px-4 py-2 uppercase text-black transition duration-150 ease-in-out hover:scale-105',
+                `${disabled && 'opacity-25'}`,
+                className,
+            )}
             disabled={disabled}
+            {...props}
         >
             {children}
         </button>

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Promise\PromiseInterface;
 
@@ -35,6 +36,37 @@ class MangaService
 
         return $this->httpClient->getAsync('/manga', ['query' => $queryParams]);
     }
+
+    /**
+     * Retrieve a list of popular mangas created in the last month.
+     *
+     * @param int $limit The maximum number of mangas to retrieve (default: 10)
+     * @return \GuzzleHttp\Promise\PromiseInterface
+     */
+    public function getPopularNew(int $limit = 10)
+    {
+        $oneMonthAgo = Carbon::now()
+            ->subMonth()
+            ->setTimezone('UTC')
+            ->format('Y-m-d\TH:i:s');
+        $queryParams = [
+            'limit' => $limit,
+            'includes' => ['cover_art', 'artist', 'author'],
+            'order' => ['followedCount' => 'desc'],
+            'contentRating' => ['safe', 'suggestive'],
+            'hasAvailableChapters' => 'true',
+            'createdAtSince' => $oneMonthAgo,
+        ];
+
+        return $this->httpClient->getAsync('/manga', ['query' => $queryParams]);
+    }
+
+    /**
+     * Retrieve a list of recently added mangas.
+     *
+     * @param int $limit The maximum number of mangas to retrieve (default: 10)
+     * @return \GuzzleHttp\Promise\PromiseInterface
+     */
 
     public function recentlyAdded(int $limit = 10)
     {

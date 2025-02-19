@@ -9,6 +9,7 @@ class MangaViewModel extends ViewModel
 {
     public function __construct(
         public array $popularMangas,
+        public array $popularNewMangas,
         public array $lastUpdateMangas,
         public array $recentlyAdded
     ) {}
@@ -16,6 +17,10 @@ class MangaViewModel extends ViewModel
     public function popularMangas(): Collection
     {
         return $this->formatMangaData($this->popularMangas);
+    }
+    public function popularNewMangas(): Collection
+    {
+        return $this->formatMangaData($this->popularNewMangas);
     }
 
     public function lastUpdateMangas(): Collection
@@ -32,10 +37,14 @@ class MangaViewModel extends ViewModel
     {
         return collect($mangaData)->map(function (array $manga) {
             $coverUrl = $this->getCoverUrl($manga);
+            $thumbnailSm = $this->getCoverUrl($manga, 256);
+            $thumbnailMd = $this->getCoverUrl($manga, 512);
             $attributes = [
                 'title' => $this->getTitle($manga),
                 'title-spa' => $this->getTitleSpa($manga),
                 'cover-art' => $coverUrl,
+                'thumbnail-sm' => $thumbnailSm,
+                'thumbnail-md' => $thumbnailMd,
                 'tags' => $this->getTags($manga),
                 'description' => $this->getDescription($manga),
             ];
@@ -47,8 +56,27 @@ class MangaViewModel extends ViewModel
         });
     }
 
-    private function getCoverUrl(array $mangaAttributes): string
-    {
+    // private function getCoverUrl(array $mangaAttributes): string
+    // {
+    //     if (isset($mangaAttributes['relationships'])) {
+    //         $coverFileName =
+    //             collect($mangaAttributes['relationships'])->firstWhere(
+    //                 'type',
+    //                 'cover_art'
+    //             )['attributes']['fileName'] ?? null;
+
+    //         if ($coverFileName) {
+    //             return "https://uploads.mangadex.org/covers/{$mangaAttributes['id']}/{$coverFileName}";
+    //         }
+    //     }
+
+    //     return '';
+    // }
+
+    private function getCoverUrl(
+        array $mangaAttributes,
+        int $size = null
+    ): string {
         if (isset($mangaAttributes['relationships'])) {
             $coverFileName =
                 collect($mangaAttributes['relationships'])->firstWhere(
@@ -57,10 +85,18 @@ class MangaViewModel extends ViewModel
                 )['attributes']['fileName'] ?? null;
 
             if ($coverFileName) {
-                return "https://uploads.mangadex.org/covers/{$mangaAttributes['id']}/{$coverFileName}";
+                $baseImageUrl = "https://uploads.mangadex.org/covers/{$mangaAttributes['id']}/{$coverFileName}";
+
+                // Si se especifica un tamaño, añadirlo a la URL
+                if ($size && in_array($size, [256, 512])) {
+                    return "{$baseImageUrl}.{$size}.jpg";
+                }
+
+                // Si no se especifica un tamaño, devolver la imagen original
+                return $baseImageUrl;
             }
         }
-
+        // Si no hay portada disponible, devolver una cadena vacía
         return '';
     }
 
