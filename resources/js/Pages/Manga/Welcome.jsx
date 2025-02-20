@@ -1,4 +1,5 @@
 import AboutUs from '@/Components/Atoms/AboutUs';
+import Title from '@/Components/Atoms/Title';
 import HeroSlider from '@/Components/Organisms/HeroSlider';
 import MangaCardSlider from '@/Components/Organisms/MangaCardSlider';
 import SocialShare from '@/Components/Organisms/SocialShare';
@@ -13,17 +14,18 @@ export default function Welcome() {
     return (
         <GuestLayout>
             <Head title="Welcome" />
-            <HeroSlider data={popularNewMangas} />
+            <HeroSlider data={popularNewMangas} className="container" />
 
-            <section className="mt-4 space-y-2 px-4 text-justify 2xl:px-0">
+            <section className="container mt-4 space-y-2 px-4 pb-5 text-justify 2xl:px-0">
                 <AboutUs className="hidden lg:block" />
                 <SocialShare />
             </section>
-            {/* <Card manga={popularNewMangas[0]} />
-            <Card manga={popularMangas[0]} />
-            <Card manga={recentlyAdded[0]} />
-            <Card manga={lastUpdateMangas[0]} /> */}
-            <MangaCardSlider data={popularNewMangas} />
+            <section className="relative bg-plumpPurpleDark px-4 pt-5">
+                <div className="container">
+                    <Title level={2}>Trending</Title>
+                    <MangaCardSlider data={popularNewMangas} />
+                </div>
+            </section>
         </GuestLayout>
     );
 }

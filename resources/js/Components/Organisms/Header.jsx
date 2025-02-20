@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { twMerge } from 'tailwind-merge';
 import Avatar from '../Atoms/Avatar';
 import Bars from '../Atoms/SvgIcons/Bars';
 import Bell from '../Atoms/SvgIcons/Bell';
@@ -20,14 +21,14 @@ const navLinks = [
     { href: 'new', name: 'new', text: 'Nuevos' },
     { href: 'categories', name: 'categories', text: 'Categorías' },
 ];
-export default function Header({ user }) {
+export default function Header({ user, className }) {
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState(false);
     const [modal, setModal] = useState(false);
     // console.log(user);
 
     return (
-        <header className="mb-5 bg-plumpPurple">
+        <header className={twMerge('mb-5 bg-plumpPurple', className)}>
             <nav>
                 <div className="flex h-[70px] justify-between px-2">
                     <div className="flex">

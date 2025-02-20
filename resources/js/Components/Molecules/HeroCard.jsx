@@ -37,7 +37,7 @@ export default function Card({ manga, className = '' }) {
                 )}
 
                 <a href="" className="mb-4 block text-white">
-                    <h3 className="line-clamp-2 text-xl font-semibold capitalize lg:text-3xl">
+                    <h3 className="line-clamp-2 font-sintony text-xl font-semibold capitalize lg:text-3xl">
                         {title}
                     </h3>
                     {titleSpa && (

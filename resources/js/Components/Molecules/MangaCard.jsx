@@ -5,25 +5,29 @@ import Globe from '../Atoms/SvgIcons/Globe';
 import Info from '../Atoms/SvgIcons/Info';
 import SecondaryButton from '../SecondaryButton';
 
-export default function MangaCard({ manga }) {
+export default function MangaCard({ manga, pos }) {
     const {
-        id,
         title,
         'thumbnail-sm': thumbnailSm,
-        'thumbnail-md': thumbnailMd,
-        'title-spa': titleSpa,
         attributes: { availableTranslatedLanguages, lastChapter, lastVolume },
     } = manga;
+
+    const rank = String(pos).padStart(2, '0');
+
     return (
-        <div className="group relative flex aspect-[7/10] h-64 w-[216px] cursor-pointer">
-            <div className="flex items-center gap-2 bg-gradient-to-t from-plumpPurple to-plumpPurpleDark px-1 py-4 text-left font-poppins text-lg text-white [writing-mode:sideways-lr]">
-                <span className="text-2xl font-bold">01</span>
-                <p className="truncate">{title}</p>
+        <div className="group relative flex aspect-[7/10] w-full cursor-pointer">
+            <div className="hidden w-1/5 items-center gap-2 bg-gradient-to-t from-plumpPurpleDark to-plumpPurple px-1 py-4 text-left font-poppins text-lg text-white [writing-mode:sideways-lr] lg:flex">
+                <p className="flex items-center truncate">
+                    <span className="pt-2 text-sm font-bold lg:text-2xl">
+                        {rank}
+                    </span>
+                    {title}
+                </p>
             </div>
             <div className="relative overflow-hidden">
                 <img
                     src={thumbnailSm}
-                    className="aspect-[7/10] w-44 object-cover object-center transition-all duration-200 ease-linear"
+                    className="aspect-[7/10] h-full object-cover object-center transition-all duration-200 ease-linear"
                     alt="poster"
                 />
 

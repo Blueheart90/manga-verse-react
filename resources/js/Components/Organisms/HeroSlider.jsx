@@ -4,13 +4,14 @@ import { Autoplay, EffectFade } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import Card from '../Molecules/HeroCard';
 
-export default function HeroSlider({ data }) {
+export default function HeroSlider({ data, className }) {
     return (
         <Swiper
             modules={[Autoplay, EffectFade]}
             effect="fade"
             loop={true}
             slidesPerView={1}
+            className={className}
             // onSlideChange={() => console.log('slide change')}
             autoplay={{
                 delay: 2500,

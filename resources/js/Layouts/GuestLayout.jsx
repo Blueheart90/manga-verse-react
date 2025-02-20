@@ -6,8 +6,8 @@ export default function GuestLayout({ children, className = '' }) {
         usePage().props;
     return (
         <div className="min-h-screen bg-plumpPurple text-xl">
-            <main className={`${className} mx-auto max-w-7xl`}>
-                <Header user={user} />
+            <main className={`${className} `}>
+                <Header user={user} className="container" />
                 {children}
             </main>
         </div>
