@@ -24,6 +24,12 @@ export default {
                 turquoise: '#4cebfc',
                 gold: '#ffd702',
             },
+            backgroundImage: {
+                'gradient-yamada':
+                    "linear-gradient(180deg, rgba(255,255,255,0) 68%, rgba(255,255,255,1) 96%), url('storage/assets/render_yamada_anna.webp')",
+                'gradient-momo':
+                    "linear-gradient(180deg, rgba(255,255,255,0) 68%, rgba(255,255,255,1) 96%), url('storage/assets/render_momo.webp')",
+            },
         },
     },
 

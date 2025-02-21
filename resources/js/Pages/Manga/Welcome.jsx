@@ -1,4 +1,5 @@
 import AboutUs from '@/Components/Atoms/AboutUs';
+import Wave from '@/Components/Atoms/SvgIcons/Wave';
 import Title from '@/Components/Atoms/Title';
 import HeroSlider from '@/Components/Organisms/HeroSlider';
 import MangaCardSlider from '@/Components/Organisms/MangaCardSlider';
@@ -24,6 +25,13 @@ export default function Welcome() {
                 <div className="container">
                     <Title level={2}>Trending</Title>
                     <MangaCardSlider data={popularNewMangas} />
+                </div>
+            </section>
+
+            <section className="h-screen bg-white">
+                <Wave className="text-plumpPurpleDark" />
+                <div className="container relative">
+                    <figure className="absolute -left-20 -top-40 h-[500px] w-[400px] bg-gradient-momo bg-cover bg-top transition-all duration-200 ease-linear hover:scale-105"></figure>
                 </div>
             </section>
         </GuestLayout>

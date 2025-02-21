@@ -5,7 +5,7 @@ export default function Title({ level, children, className, ...props }) {
     return (
         <Tag
             className={twMerge(
-                'mb-4 font-sintony text-3xl font-bold capitalize text-white',
+                'mb-4 font-sintony text-2xl font-bold capitalize text-white 2xl:text-3xl',
                 className,
             )}
             {...props}
