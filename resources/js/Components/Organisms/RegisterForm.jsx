@@ -11,7 +11,7 @@ export default function RegisterForm() {
         password: '',
         password_confirmation: '',
     });
-    console.log({ errors });
+
     const submit = (e) => {
         e.preventDefault();
 

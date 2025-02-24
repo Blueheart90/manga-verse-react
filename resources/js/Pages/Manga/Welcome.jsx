@@ -10,7 +10,6 @@ import { Head, usePage } from '@inertiajs/react';
 export default function Welcome() {
     const { lastUpdateMangas, popularMangas, recentlyAdded, popularNewMangas } =
         usePage().props;
-    console.log({ popularNewMangas });
 
     return (
         <GuestLayout>
@@ -27,7 +26,6 @@ export default function Welcome() {
                     <MangaCardSlider data={popularNewMangas} />
                 </div>
             </section>
-
             <section className="h-screen bg-white">
                 <Wave className="text-plumpPurpleDark" />
                 <div className="container relative">

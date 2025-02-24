@@ -7,6 +7,8 @@ import SecondaryButton from '../SecondaryButton';
 
 export default function MangaCard({ manga, pos }) {
     const {
+        id,
+        slug,
         title,
         'thumbnail-sm': thumbnailSm,
         attributes: { availableTranslatedLanguages, lastChapter, lastVolume },
@@ -52,7 +54,10 @@ export default function MangaCard({ manga, pos }) {
                         </div>
                     </section>
                     <div className="space-y-1">
-                        <CallToAction className="flex w-full items-center justify-center gap-1 p-[6px] text-sm capitalize">
+                        <CallToAction
+                            href={route('manga.show', { id, slug })}
+                            className="flex w-full items-center justify-center gap-1 p-[6px] text-sm capitalize"
+                        >
                             <Glasses className="size-4" />
                             Leer Ahora
                         </CallToAction>

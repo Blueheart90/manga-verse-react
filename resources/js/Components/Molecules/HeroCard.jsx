@@ -5,8 +5,6 @@ import Tags from '../Atoms/Tags';
 import SecondaryButton from '../SecondaryButton';
 
 export default function Card({ manga, className = '' }) {
-    console.log(manga);
-
     const {
         id,
         title,

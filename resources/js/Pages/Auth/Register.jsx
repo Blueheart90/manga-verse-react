@@ -4,7 +4,6 @@ import { Head, usePage } from '@inertiajs/react';
 
 export default function Register() {
     const { errors } = usePage().props;
-    // console.log({ errors });
 
     return (
         <GuestLayout>

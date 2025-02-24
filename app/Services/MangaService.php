@@ -19,6 +19,16 @@ class MangaService
         ]);
     }
 
+    public function getManga(string $id): PromiseInterface
+    {
+        $queryParams = [
+            'includes' => ['cover_art'],
+        ];
+        return $this->httpClient->getAsync("/manga/$id", [
+            'query' => $queryParams,
+        ]);
+    }
+
     /**
      * Retrieve a list of the most popular mangas.
      *

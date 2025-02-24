@@ -25,7 +25,6 @@ export default function Header({ user, className }) {
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState(false);
     const [modal, setModal] = useState(false);
-    // console.log(user);
 
     return (
         <header className={twMerge('mb-5 bg-plumpPurple', className)}>

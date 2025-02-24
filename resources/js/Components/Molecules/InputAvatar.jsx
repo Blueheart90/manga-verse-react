@@ -24,8 +24,6 @@ const InputAvatar = ({
         }
     };
     const handleImageRemove = (event) => {
-        console.log('quitando foto');
-
         event.stopPropagation();
         inputPhotoRef.current.value = null;
         reset('photo');
