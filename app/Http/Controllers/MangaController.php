@@ -5,37 +5,23 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use GuzzleHttp\Promise\Utils;
 use App\Services\MangaService;
+use App\Services\MangaServicetest;
 use App\ViewModels\IndexMangaViewModel;
 use App\ViewModels\ShowMangaViewModel;
 use Inertia\Response;
 
 class MangaController extends Controller
 {
-    public function __construct(private MangaService $mangaService) {}
+    public function __construct(
+        private MangaService $mangaService,
+        private MangaServicetest $mangaServicetest
+    ) {}
     public function home(): Response
     {
-        $mangaResponses = Utils::unwrap([
-            'popularMangas' => $this->mangaService->getPopular(2),
-            'popularNewMangas' => $this->mangaService->getPopularNew(10),
-            'recentlyAddedMangas' => $this->mangaService->recentlyAdded(1),
-            'lastUpdatedMangas' => $this->mangaService->getLastUpdateMangas(1),
-        ]);
-
-        $popularMangasData = json_decode(
-            $mangaResponses['popularMangas']->getBody(),
-            true
-        )['data'];
-
-        $popularNewMangasData = json_decode(
-            $mangaResponses['popularNewMangas']->getBody(),
-            true
-        )['data'];
-
-        $recentlyAddedMangasData = json_decode(
-            $mangaResponses['recentlyAddedMangas']->getBody(),
-            true
-        )['data'];
-        $lastUpdatedMangasData = $mangaResponses['lastUpdatedMangas'];
+        $popularMangasData = $this->mangaService->getPopular(10);
+        $popularNewMangasData = $this->mangaService->getPopularNew(10);
+        $recentlyAddedMangasData = $this->mangaService->recentlyAdded(1);
+        $lastUpdatedMangasData = $this->mangaService->getLastUpdateMangas(1);
 
         $mangaViewModel = new IndexMangaViewModel(
             $popularMangasData,
@@ -43,26 +29,20 @@ class MangaController extends Controller
             $lastUpdatedMangasData,
             $recentlyAddedMangasData
         );
-
         return Inertia::render('Manga/Welcome', $mangaViewModel);
     }
 
     public function show(string $id, string $slug): Response
     {
-        $manga = json_decode(
-            $this->mangaService->getManga($id)->wait()->getBody(),
-            true
-        )['data'];
+        $mangaInfo = $this->mangaService->getManga($id);
+        $mangaStats = $this->mangaService->getMangaStats($id);
 
-        $mangaShowViewModel = new ShowMangaViewModel($manga);
+        $mangaShowViewModel = new ShowMangaViewModel($mangaInfo, $mangaStats);
 
         return Inertia::render('Manga/Show', $mangaShowViewModel);
     }
 
-    // public function detail(string $id)
+    // public function test(): Response
     // {
-    //     $manga = $this->mangaService->getManga($id);
-    //     $mangaViewModel = new MangaViewModel($manga);
-    //     return Inertia::render('Manga/Detail', $mangaViewModel);
     // }
 }

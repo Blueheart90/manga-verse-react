@@ -1,5 +1,5 @@
+import { cn } from '@/lib/utils';
 import { useState } from 'react';
-import { twMerge } from 'tailwind-merge';
 import Avatar from '../Atoms/Avatar';
 import Bars from '../Atoms/SvgIcons/Bars';
 import Bell from '../Atoms/SvgIcons/Bell';
@@ -27,8 +27,8 @@ export default function Header({ user, className }) {
     const [modal, setModal] = useState(false);
 
     return (
-        <header className={twMerge('mb-5 bg-plumpPurple', className)}>
-            <nav>
+        <header className={cn('', className)}>
+            <nav className="container">
                 <div className="flex h-[70px] justify-between px-2">
                     <div className="flex">
                         {/* Hamburger */}

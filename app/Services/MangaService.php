@@ -4,54 +4,92 @@ namespace App\Services;
 
 use Carbon\Carbon;
 use GuzzleHttp\Client;
+use Illuminate\Support\Collection;
+use Illuminate\Http\Client\Response;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
+use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Promise\PromiseInterface;
 
 class MangaService
 {
-    protected $httpClient;
+    protected $mangadexHttpClient;
+    protected $jikanHttpClient;
 
     public function __construct(
-        private FetchService $fetchService,
-        private string $baseUrl = 'https://api.mangadex.org'
+        private string $mangadexBaseUrl = 'https://api.mangadex.org',
+        private string $jikanBaseUrl = 'https://api.jikan.moe'
     ) {
-        $this->httpClient = new Client([
-            'base_uri' => $this->baseUrl,
+        $this->mangadexHttpClient = new Client([
+            'base_uri' => $this->mangadexBaseUrl,
+        ]);
+        $this->jikanHttpClient = new Client([
+            'base_uri' => $this->jikanBaseUrl,
         ]);
     }
 
-    public function getManga(string $id): PromiseInterface
+    public function getManga(string $mangaId): array
     {
         $queryParams = [
-            'includes' => ['cover_art'],
+            'includes' => ['cover_art', 'author', 'artist'],
         ];
-        return $this->httpClient->getAsync("/manga/$id", [
+
+        $response = $this->mangadexHttpClient->get("/manga/$mangaId", [
             'query' => $queryParams,
         ]);
+
+        $responseData = json_decode($response->getBody()->getContents(), true);
+
+        return $responseData['data'];
     }
 
-    /**
-     * Retrieve a list of the most popular mangas.
-     *
-     * @param int $limit The maximum number of mangas to retrieve (default: 10)
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function getPopular(int $limit = 10)
+    public function getMangaStats(string $mangaId): array
+    {
+        $response = $this->mangadexHttpClient->get(
+            "/statistics/manga/$mangaId"
+        );
+
+        $responseData = json_decode($response->getBody()->getContents(), true);
+
+        return $responseData['statistics'];
+    }
+
+    public function getPopular(int $limit = 10): array
     {
         $queryParams = [
             'limit' => $limit,
             'hasAvailableChapters' => 'true',
-            'order' => ['followedCount' => 'desc'],
+            'order' => [
+                'followedCount' => 'desc',
+            ],
             'includes' => ['cover_art'],
         ];
 
-        return $this->httpClient->getAsync('/manga', ['query' => $queryParams]);
+        return Cache::remember(
+            'mangadex_popular_mangas',
+            60 * 60,
+            function () use ($queryParams) {
+                $response = $this->mangadexHttpClient->get('/manga', [
+                    'query' => $queryParams,
+                ]);
+
+                return $response->getStatusCode() === 200
+                    ? json_decode($response->getBody()->getContents(), true)[
+                        'data'
+                    ]
+                    : [];
+            }
+        );
     }
 
     /**
-     * Retrieve a list of popular mangas created in the last month.
+     * Retrieves a list of popular new mangas, sorted by followed count.
+     * 'New' is defined as any manga created in the last month.
      *
-     * @param int $limit The maximum number of mangas to retrieve (default: 10)
-     * @return \GuzzleHttp\Promise\PromiseInterface
+     * Caches the result for 1 hour.
+     *
+     * @param int $limit The maximum number of mangas to retrieve
+     * @return array A list of popular mangas or an empty array if the request fails
      */
     public function getPopularNew(int $limit = 10)
     {
@@ -68,16 +106,33 @@ class MangaService
             'createdAtSince' => $oneMonthAgo,
         ];
 
-        return $this->httpClient->getAsync('/manga', ['query' => $queryParams]);
+        return Cache::remember(
+            'mangadex_new_popular_mangas',
+            60 * 5,
+            function () use ($queryParams) {
+                $response = $this->mangadexHttpClient->get('/manga', [
+                    'query' => $queryParams,
+                ]);
+
+                return $response->getStatusCode() === 200
+                    ? json_decode($response->getBody()->getContents(), true)[
+                        'data'
+                    ]
+                    : [];
+            }
+        );
     }
 
     /**
-     * Retrieve a list of recently added mangas.
+     * Retrieves a list of recently added mangas, sorted by creation date.
      *
-     * @param int $limit The maximum number of mangas to retrieve (default: 10)
-     * @return \GuzzleHttp\Promise\PromiseInterface
+     * Only includes mangas with available chapters and with a content rating of 'safe', 'suggestive', or 'erotica'.
+     *
+     * Caches the result for 1 hour.
+     *
+     * @param int $limit The maximum number of mangas to retrieve
+     * @return array A list of recently added mangas or an empty array if the request fails
      */
-
     public function recentlyAdded(int $limit = 10)
     {
         $queryParams = [
@@ -88,7 +143,22 @@ class MangaService
             'hasAvailableChapters' => 'true',
         ];
 
-        return $this->httpClient->getAsync('/manga', ['query' => $queryParams]);
+        return Cache::remember(
+            'mangadex_recently_added_mangas',
+            60 * 60,
+            function () use ($queryParams) {
+                $response = $this->mangadexHttpClient->get(
+                    '/manga',
+                    $queryParams
+                );
+
+                return $response->getStatusCode() === 200
+                    ? json_decode($response->getBody()->getContents(), true)[
+                        'data'
+                    ]
+                    : [];
+            }
+        );
     }
 
     function getLastUpdateChapters(int $limit = 24)
@@ -100,39 +170,67 @@ class MangaService
             'limit' => $limit,
         ];
 
-        return $this->httpClient->getAsync('/chapter', [
-            'query' => $queryParams,
-        ]);
+        return Cache::remember(
+            'mangadex_last_update_chapters',
+            60 * 60,
+            function () use ($queryParams) {
+                $response = $this->mangadexHttpClient->get(
+                    '/chapter',
+                    $queryParams
+                );
+
+                return $response->getStatusCode() === 200
+                    ? json_decode($response->getBody()->getContents(), true)[
+                        'data'
+                    ]
+                    : [];
+            }
+        );
     }
 
-    function getLastUpdateMangas(int $limit = 24): PromiseInterface
+    function getLastUpdateMangas(int $limit = 24)
     {
-        return $this->getLastUpdateChapters($limit)->then(function (
-            $response
-        ) use ($limit) {
-            $chapters = json_decode($response->getBody(), true)['data'];
+        $chapters = $this->getLastUpdateChapters($limit);
 
-            if (empty($chapters)) {
-                return collect();
-            }
+        if (empty($chapters)) {
+            return collect();
+        }
 
-            // Group chapters by manga
-            $groupedChapters = $this->groupChaptersByManga($chapters);
-            $mangaIds = $this->extractMangaIds($chapters);
+        // Group chapters by manga
+        $groupedChapters = $this->groupChaptersByManga($chapters);
+        $mangaIds = $this->extractMangaIds($chapters);
 
-            return $this->fetchMangaDetails($mangaIds, $limit)->then(function (
-                $mangasData
-            ) use ($groupedChapters) {
-                return $this->combineMangaWithChapters(
-                    $mangasData,
-                    $groupedChapters
-                );
-            });
-        });
+        $mangasData = $this->fetchMangaDetails($mangaIds, $limit);
+
+        return $this->combineMangaWithChapters($mangasData, $groupedChapters);
+
+        // return $this->getLastUpdateChapters($limit)->then(function (
+        //     $response
+        // ) use ($limit) {
+        //     $chapters = json_decode($response->getBody(), true)['data'];
+
+        //     if (empty($chapters)) {
+        //         return collect();
+        //     }
+
+        //     // Group chapters by manga
+        //     $groupedChapters = $this->groupChaptersByManga($chapters);
+        //     $mangaIds = $this->extractMangaIds($chapters);
+
+        //     return $this->fetchMangaDetails($mangaIds, $limit)->then(function (
+        //         $mangasData
+        //     ) use ($groupedChapters) {
+        //         return $this->combineMangaWithChapters(
+        //             $mangasData,
+        //             $groupedChapters
+        //         );
+        //     });
+        // });
     }
 
     function groupChaptersByManga($chapters): array
     {
+        // dump('chapters', $chapters);
         // Agrupar los capítulos por manga_id
         $groupedChapters = collect($chapters)
             ->groupBy(function ($chapter) {
@@ -146,10 +244,8 @@ class MangaService
         return $groupedChapters;
     }
 
-    private function fetchMangaDetails(
-        array $mangaIds,
-        int $limit
-    ): PromiseInterface {
+    private function fetchMangaDetails(array $mangaIds, int $limit)
+    {
         $queryParams = [
             'limit' => $limit,
             'includes' => ['cover_art'],
@@ -161,13 +257,8 @@ class MangaService
                 'pornographic',
             ],
         ];
-
-        // Usar getAsync para mantener la asincronía
-        return $this->httpClient
-            ->getAsync('/manga', ['query' => $queryParams])
-            ->then(function ($response) {
-                return json_decode($response->getBody(), true)['data'];
-            });
+        $response = $this->mangadexHttpClient->get('/manga', $queryParams);
+        return json_decode($response->getBody()->getContents(), true)['data'];
     }
 
     private function extractMangaIds(array $chapters): array
@@ -180,6 +271,11 @@ class MangaService
             ->unique()
             ->values()
             ->toArray();
+    }
+
+    function getCharacters(string $id): Response
+    {
+        return Http::get($this->jikanBaseUrl . "/v4/manga/$id/characters");
     }
 
     function combineMangaWithChapters($mangasData, $groupedChapters): array

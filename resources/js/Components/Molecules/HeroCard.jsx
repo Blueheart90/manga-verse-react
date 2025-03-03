@@ -8,11 +8,12 @@ export default function Card({ manga, className = '' }) {
     const {
         id,
         title,
+        slug,
+        description,
+        tags,
         'cover-art': coverArt,
         'thumbnail-sm': thumbnailSm,
         'thumbnail-md': thumbnailMd,
-        description,
-        tags,
         'title-spa': titleSpa,
         attributes: { originalLanguage },
     } = manga;
@@ -47,9 +48,14 @@ export default function Card({ manga, className = '' }) {
                 <p className="mb-8 hidden text-sm leading-5 text-white md:line-clamp-3 lg:text-base">
                     {description}
                 </p>
-                <Tags className="mb-5 hidden lg:flex" tags={tags} />
+                <div className="mb-5 hidden flex-wrap gap-x-2 gap-y-1 lg:flex">
+                    <Tags tags={tags} />
+                </div>
                 <div className="flex gap-2">
-                    <CallToAction className="py-2 font-poppins text-sm capitalize">
+                    <CallToAction
+                        href={route('manga.show', { id, slug })}
+                        className="py-2 font-poppins text-sm capitalize"
+                    >
                         Leer ahora
                     </CallToAction>
                     <SecondaryButton className="py-2 font-poppins text-sm capitalize">
@@ -64,11 +70,6 @@ export default function Card({ manga, className = '' }) {
                         className="aspect-[7/10] w-72 rotate-[15deg] border-[10px] border-white object-cover object-center shadow-2xl shadow-slate-950 transition-all duration-200 ease-linear hover:rotate-[18deg] hover:scale-105 lg:w-96 xl:w-[400px]"
                         alt="poster"
                     />
-                    {/* <img
-                            src={coverArt}
-                            className="w-72 rotate-[15deg] border-[10px] border-white object-cover shadow-2xl shadow-slate-950 transition-all duration-200 ease-linear hover:rotate-[18deg] hover:scale-105 lg:w-96 xl:w-[400px]"
-                            alt="poster"
-                        /> */}
                 </a>
             </div>
             <Flag

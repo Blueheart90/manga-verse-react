@@ -43,6 +43,7 @@ class IndexMangaViewModel extends MangaBaseViewModel
                 'title' => $this->getTitle($manga),
                 'slug' => Str::slug($this->getTitle($manga)),
                 'title-spa' => $this->getTitleSpa($manga),
+                'original-title' => $this->getOriginalTitle($manga),
                 'cover-art' => $coverUrl,
                 'thumbnail-sm' => $thumbnailSm,
                 'thumbnail-md' => $thumbnailMd,

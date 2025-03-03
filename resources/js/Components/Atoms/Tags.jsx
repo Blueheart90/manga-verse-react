@@ -1,14 +1,19 @@
+import { twMerge } from 'tailwind-merge';
+
 export default function Tags({ tags, className = '' }) {
     return (
-        <div className={`flex flex-wrap gap-x-2 gap-y-1 ${className}`}>
+        <>
             {tags.map((tag, index) => (
                 <span
                     key={index}
-                    className="rounded border border-white px-2 py-1 text-xs text-white"
+                    className={twMerge(
+                        'rounded border border-white px-2 py-1 text-xs text-white',
+                        className,
+                    )}
                 >
                     {tag}
                 </span>
             ))}
-        </div>
+        </>
     );
 }

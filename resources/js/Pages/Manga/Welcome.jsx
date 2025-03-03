@@ -14,7 +14,7 @@ export default function Welcome() {
     return (
         <GuestLayout>
             <Head title="Welcome" />
-            <HeroSlider data={popularNewMangas} className="container" />
+            <HeroSlider data={popularMangas} className="container" />
 
             <section className="container mt-4 space-y-2 px-4 pb-5 text-justify 2xl:px-0">
                 <AboutUs className="hidden lg:block" />

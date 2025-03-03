@@ -7,12 +7,28 @@ use Illuminate\Support\Collection;
 
 class ShowMangaViewModel extends MangaBaseViewModel
 {
-    public function __construct(public array $manga) {}
+    public function __construct(
+        public array $manga,
+        public array $statistics
+    ) {}
 
     public function manga(): Collection
     {
-        logger('desde show manga');
         return $this->formatMangaData($this->manga);
+    }
+    public function statistics(): array
+    {
+        if (empty($this->statistics)) {
+            return [];
+        }
+
+        $firstStat = array_values($this->statistics)[0];
+        $rating = $firstStat['rating'];
+        $roundedBayesian = round($rating['bayesian'], 2);
+
+        $newrating = collect($rating)->merge(['rounded' => $roundedBayesian]);
+        $firstStat['rating'] = $newrating;
+        return $firstStat;
     }
 
     private function formatMangaData(array $manga): Collection
@@ -24,6 +40,8 @@ class ShowMangaViewModel extends MangaBaseViewModel
             'title' => $this->getTitle($manga),
             'slug' => Str::slug($this->getTitle($manga)),
             'title-spa' => $this->getTitleSpa($manga),
+            'original-title' => $this->getOriginalTitle($manga),
+            'staff' => $this->getStaff($manga),
             'cover-art' => $coverUrl,
             'thumbnail-sm' => $thumbnailSm,
             'thumbnail-md' => $thumbnailMd,

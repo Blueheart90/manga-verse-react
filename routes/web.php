@@ -16,6 +16,7 @@ use Inertia\Inertia;
 // })->name('home');
 
 Route::get('/', [MangaController::class, 'home'])->name('home');
+Route::get('/test', [MangaController::class, 'test'])->name('test');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
