@@ -1,31 +1,27 @@
 import Tags from '@/Components/Atoms/Tags';
 import Title from '@/Components/Atoms/Title';
+import DetailsManga from '@/Components/Molecules/DetailsManga';
 import ExpandableText from '@/Components/Molecules/ExpandableText';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { cn } from '@/lib/utils';
 import { Head, usePage } from '@inertiajs/react';
-import { useState } from 'react';
 
 export default function Show() {
-    const [showMore, setShowMore] = useState(false);
     const { manga, statistics: stats } = usePage().props;
-    console.log({ stats, manga });
 
     const {
         title,
-        'cover-art': coverArt,
-        'thumbnail-sm': thumbnailSm,
-        'thumbnail-md': thumbnailMd,
+        cover_art: coverArt,
+        thumbnail_sm: thumbnailSm,
+        thumbnail_md: thumbnailMd,
         description,
-        type,
         tags,
-        'title-spa': titleSpa,
-        'original-title': originalTitle,
+        original_title: originalTitle,
         attributes: { originalLanguage, status, publicationDemographic, year },
-        staff: { authors, artists },
+        info,
     } = manga;
-
-    console.log({ authors });
+    console.log({ stats, manga });
+    console.log(typeof info);
 
     return (
         <GuestLayout className="bg-plumpPurple">
@@ -49,7 +45,10 @@ export default function Show() {
                         </figure>
                     </div>
                     <div className="flex flex-1 flex-col font-poppins">
-                        <Title className="text-plumpPurpleDark" level={1}>
+                        <Title
+                            className="line-clamp-2 text-plumpPurpleDark"
+                            level={1}
+                        >
                             {title}
                         </Title>
                         {originalTitle && (
@@ -64,51 +63,14 @@ export default function Show() {
                             />
                         </div>
 
-                        <ExpandableText description={description} />
+                        <ExpandableText text={description} />
                     </div>
                     <div className="flex min-w-64 flex-col px-4 font-poppins text-sm text-plumpPurpleDark">
                         <div className="space-y-1 rounded-xl border border-plumpPurpleDark px-4 py-10 font-sintony shadow-sm shadow-plumpPurpleDark">
                             <h5 className="text-lg font-bold">
                                 Detalles del manga
                             </h5>
-                            <div>
-                                <span className="font-bold">Type: </span>
-                                <span className="capitalize">{type}</span>
-                            </div>
-                            <div>
-                                <span className="font-bold">Status: </span>
-                                <span className="capitalize">{status}</span>
-                            </div>
-                            <div>
-                                <span className="font-bold">Authors: </span>
-                                <span className="capitalize">
-                                    {authors.join(', ')}
-                                </span>
-                            </div>
-                            <div>
-                                <span className="font-bold">Artists: </span>
-                                <span className="capitalize">
-                                    {artists.join(', ')}
-                                </span>
-                            </div>
-                            <div>
-                                <span className="font-bold">Demographic: </span>
-                                <span className="capitalize">
-                                    {publicationDemographic}
-                                </span>
-                            </div>
-
-                            <div>
-                                <span className="font-bold">Year: </span>
-                                <span className="capitalize">{year}</span>
-                            </div>
-
-                            <div>
-                                <span className="font-bold">Score: </span>
-                                <span className="capitalize">
-                                    {stats.rating.rounded}
-                                </span>
-                            </div>
+                            <DetailsManga data={info} />
                         </div>
                     </div>
                 </div>

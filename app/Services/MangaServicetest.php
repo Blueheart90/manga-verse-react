@@ -201,34 +201,10 @@ class MangaServicetest
         $mangasData = $this->fetchMangaDetails($mangaIds, $limit);
 
         return $this->combineMangaWithChapters($mangasData, $groupedChapters);
-
-        // return $this->getLastUpdateChapters($limit)->then(function (
-        //     $response
-        // ) use ($limit) {
-        //     $chapters = json_decode($response->getBody(), true)['data'];
-
-        //     if (empty($chapters)) {
-        //         return collect();
-        //     }
-
-        //     // Group chapters by manga
-        //     $groupedChapters = $this->groupChaptersByManga($chapters);
-        //     $mangaIds = $this->extractMangaIds($chapters);
-
-        //     return $this->fetchMangaDetails($mangaIds, $limit)->then(function (
-        //         $mangasData
-        //     ) use ($groupedChapters) {
-        //         return $this->combineMangaWithChapters(
-        //             $mangasData,
-        //             $groupedChapters
-        //         );
-        //     });
-        // });
     }
 
     function groupChaptersByManga($chapters): array
     {
-        // dump('chapters', $chapters);
         // Agrupar los capítulos por manga_id
         $groupedChapters = collect($chapters)
             ->groupBy(function ($chapter) {

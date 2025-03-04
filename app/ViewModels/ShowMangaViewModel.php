@@ -39,14 +39,17 @@ class ShowMangaViewModel extends MangaBaseViewModel
         $attributes = [
             'title' => $this->getTitle($manga),
             'slug' => Str::slug($this->getTitle($manga)),
-            'title-spa' => $this->getTitleSpa($manga),
-            'original-title' => $this->getOriginalTitle($manga),
+            'title_spa' => $this->getTitleSpa($manga),
+            'original_title' => $this->getOriginalTitle($manga),
             'staff' => $this->getStaff($manga),
-            'cover-art' => $coverUrl,
-            'thumbnail-sm' => $thumbnailSm,
-            'thumbnail-md' => $thumbnailMd,
+            'cover_art' => $coverUrl,
+            'thumbnail_sm' => $thumbnailSm,
+            'thumbnail_md' => $thumbnailMd,
             'tags' => $this->getTags($manga),
             'description' => $this->getDescription($manga),
+            'info' => $this->getInfo($manga, [
+                'rating' => $this->statistics()['rating']['rounded'],
+            ]),
         ];
 
         // Combina los atributos nuevos con los datos originales y excluye 'relationships'

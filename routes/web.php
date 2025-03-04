@@ -27,6 +27,9 @@ Route::get('/dashboard', function () {
 Route::get('/manga/{id}/{slug?}', [MangaController::class, 'show'])->name(
     'manga.show'
 );
+Route::get('/mangatwo/{id}/{slug?}', [MangaController::class, 'showTwo'])->name(
+    'manga.showtwo'
+);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name(

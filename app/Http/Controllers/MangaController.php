@@ -41,6 +41,15 @@ class MangaController extends Controller
 
         return Inertia::render('Manga/Show', $mangaShowViewModel);
     }
+    public function showTwo(string $id, string $slug): Response
+    {
+        $mangaInfo = $this->mangaService->getManga($id);
+        $mangaStats = $this->mangaService->getMangaStats($id);
+
+        $mangaShowViewModel = new ShowMangaViewModel($mangaInfo, $mangaStats);
+
+        return Inertia::render('Manga/ShowTwo', $mangaShowViewModel);
+    }
 
     // public function test(): Response
     // {

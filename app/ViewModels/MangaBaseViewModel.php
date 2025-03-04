@@ -54,6 +54,25 @@ abstract class MangaBaseViewModel extends ViewModel
                 array_values($mangaAttributes['attributes']['title'])[0]);
     }
 
+    protected function getInfo(
+        array $mangaAttributes,
+        array $extraInfo = []
+    ): Collection {
+        $mangaInfo = [
+            'type' => $mangaAttributes['type'],
+            'status' => $mangaAttributes['attributes']['status'],
+            'last_volume' => $mangaAttributes['attributes']['lastVolume'],
+            'last_chapter' => $mangaAttributes['attributes']['lastChapter'],
+            'demographic' =>
+                $mangaAttributes['attributes']['publicationDemographic'],
+            'year' => $mangaAttributes['attributes']['year'],
+        ];
+
+        return collect($mangaInfo)
+            ->merge($this->getStaff($mangaAttributes))
+            ->merge($extraInfo);
+    }
+
     protected function getOriginalTitle(array $mangaAttributes): ?string
     {
         $originalLang = $mangaAttributes['attributes']['originalLanguage'];
@@ -74,22 +93,30 @@ abstract class MangaBaseViewModel extends ViewModel
             ->flatten(1);
     }
 
+    /**
+     * @param array $mangaAttributes
+     * @return array
+     */
+    /**
+     * Extracts the authors and artists from the given manga attributes.
+     *
+     * @return array An associative array with the keys 'authors' and 'artists',
+     *               each containing a string of comma-separated names.
+     */
     protected function getStaff(array $mangaAttributes): array
     {
         $staff = [
-            'authors' => [],
-            'artists' => [],
+            'authors' => '',
+            'artists' => '',
         ];
 
-        if (!empty($mangaAttributes['relationships'])) {
-            $relationships = collect($mangaAttributes['relationships']);
+        $relationships = collect($mangaAttributes['relationships']);
 
-            foreach (['author', 'artist'] as $role) {
-                $staff[$role . 's'] = $relationships
-                    ->where('type', $role)
-                    ->pluck('attributes.name')
-                    ->all();
-            }
+        foreach (['author', 'artist'] as $role) {
+            $staff[$role . 's'] = $relationships
+                ->where('type', $role)
+                ->pluck('attributes.name')
+                ->implode(', ');
         }
 
         return $staff;

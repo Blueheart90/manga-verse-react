@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils';
 import { useEffect, useRef, useState } from 'react';
 
-export default function ExpandableText({ description }) {
+export default function ExpandableText({ text, className }) {
     const [showMore, setShowMore] = useState(false);
     const textRef = useRef(null);
 
@@ -18,26 +18,26 @@ export default function ExpandableText({ description }) {
 
             setIsTruncated(isOverflowing);
         }
-    }, [description]);
+    }, [text]);
 
     return (
-        <div>
+        <div className={cn('text-plumpPurpleDark', className)}>
             {/* Descripción */}
             <p
                 ref={textRef}
                 className={cn(
-                    'mb-4 font-poppins text-sm leading-5 text-plumpPurpleDark lg:text-base',
-                    !showMore && 'line-clamp-3', // Aplicamos line-clamp solo si showMore es false
+                    'mb-4 font-poppins text-sm leading-5 lg:text-base',
+                    !showMore && 'line-clamp-3',
                 )}
             >
-                {description}
+                {text}
             </p>
 
             {/* Botón "Show more" solo si el texto está truncado */}
             {isTruncated && (
                 <button
                     onClick={() => setShowMore(!showMore)}
-                    className="text-sm font-medium text-plumpPurple underline transition-colors hover:text-plumpPurpleDark"
+                    className="text-sm font-medium underline transition-colors hover:text-plumpPurple"
                 >
                     {showMore ? 'Leer menos' : 'Leer más'}
                 </button>
