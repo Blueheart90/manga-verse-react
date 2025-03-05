@@ -200,7 +200,7 @@ class MangaService
         $groupedChapters = $this->groupChaptersByManga($chapters);
         $mangaIds = $this->extractMangaIds($chapters);
 
-        $mangasData = $this->fetchMangaDetails($mangaIds, $limit);
+        $mangasData = $this->getMangaDetails($mangaIds, $limit);
 
         return $this->combineMangaWithChapters($mangasData, $groupedChapters);
     }
@@ -220,7 +220,7 @@ class MangaService
         return $groupedChapters;
     }
 
-    private function fetchMangaDetails(array $mangaIds, int $limit)
+    private function getMangaDetails(array $mangaIds, int $limit)
     {
         $queryParams = [
             'limit' => $limit,
@@ -249,9 +249,24 @@ class MangaService
             ->toArray();
     }
 
-    function getCharacters(string $id): Response
+    /**
+     * Retrieve a list of characters from a given MyAnimeList (MAL) id.
+     *
+     * @param string $malId The MAL id of the manga.
+     * @param int $limit The maximum number of characters to retrieve. Defaults to 10.
+     * @return array A list of characters, or an empty array if the request fails.
+     */
+    public function getCharactersMal(string $malId, int $limit = 10): array
     {
-        return Http::get($this->jikanBaseUrl . "/v4/manga/$id/characters");
+        $malResponse = $this->jikanHttpClient->get(
+            "/v4/manga/$malId/characters"
+        );
+
+        return collect(
+            json_decode($malResponse->getBody()->getContents(), true)['data']
+        )
+            ->take($limit)
+            ->toArray();
     }
 
     function combineMangaWithChapters($mangasData, $groupedChapters): array

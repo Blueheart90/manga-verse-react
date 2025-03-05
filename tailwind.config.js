@@ -19,7 +19,7 @@ export default {
                 poppins: ['Poppins', ...defaultTheme.fontFamily.sans],
             },
             colors: {
-                plumpPurpleLight: '#EADEF7',
+                plumpPurpleLight: '#F5EFFB',
                 plumpPurple: '#6f42c1',
                 plumpPurpleDark: '#5A2494',
                 turquoise: '#4cebfc',

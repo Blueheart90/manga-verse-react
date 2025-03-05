@@ -198,7 +198,7 @@ class MangaServicetest
         $groupedChapters = $this->groupChaptersByManga($chapters);
         $mangaIds = $this->extractMangaIds($chapters);
 
-        $mangasData = $this->fetchMangaDetails($mangaIds, $limit);
+        $mangasData = $this->getMangaDetails($mangaIds, $limit);
 
         return $this->combineMangaWithChapters($mangasData, $groupedChapters);
     }
@@ -218,7 +218,7 @@ class MangaServicetest
         return $groupedChapters;
     }
 
-    private function fetchMangaDetails(array $mangaIds, int $limit)
+    private function getMangaDetails(array $mangaIds, int $limit)
     {
         $queryParams = [
             'limit' => $limit,

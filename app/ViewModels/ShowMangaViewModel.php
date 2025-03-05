@@ -9,7 +9,8 @@ class ShowMangaViewModel extends MangaBaseViewModel
 {
     public function __construct(
         public array $manga,
-        public array $statistics
+        public array $statistics,
+        public array $characters
     ) {}
 
     public function manga(): Collection

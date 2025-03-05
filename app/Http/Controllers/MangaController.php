@@ -34,19 +34,41 @@ class MangaController extends Controller
 
     public function show(string $id, string $slug): Response
     {
-        $mangaInfo = $this->mangaService->getManga($id);
-        $mangaStats = $this->mangaService->getMangaStats($id);
+        $mangaDetails = $this->mangaService->getManga($id);
+        $mangaStatistics = $this->mangaService->getMangaStats($id);
 
-        $mangaShowViewModel = new ShowMangaViewModel($mangaInfo, $mangaStats);
+        $malId = $mangaDetails['attributes']['links']['mal'] ?? null;
+        if (isset($malId)) {
+            $mangaCharacter = $this->mangaService->getCharactersMal($malId);
+        } else {
+            $mangaCharacter = [];
+        }
 
-        return Inertia::render('Manga/Show', $mangaShowViewModel);
+        $viewModel = new ShowMangaViewModel(
+            $mangaDetails,
+            $mangaStatistics,
+            $mangaCharacter
+        );
+
+        return Inertia::render('Manga/Show', $viewModel);
     }
     public function showTwo(string $id, string $slug): Response
     {
         $mangaInfo = $this->mangaService->getManga($id);
         $mangaStats = $this->mangaService->getMangaStats($id);
 
-        $mangaShowViewModel = new ShowMangaViewModel($mangaInfo, $mangaStats);
+        $malId = $mangaDetails['attributes']['links']['mal'] ?? null;
+        if (isset($malId)) {
+            $mangaCharacter = $this->mangaService->getCharactersMal($malId);
+        } else {
+            $mangaCharacter = [];
+        }
+
+        $mangaShowViewModel = new ShowMangaViewModel(
+            $mangaInfo,
+            $mangaStats,
+            $mangaCharacter
+        );
 
         return Inertia::render('Manga/ShowTwo', $mangaShowViewModel);
     }

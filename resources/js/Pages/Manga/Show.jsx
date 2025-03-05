@@ -1,5 +1,6 @@
 import Tags from '@/Components/Atoms/Tags';
 import Title from '@/Components/Atoms/Title';
+import CharactersManga from '@/Components/Molecules/CharactersManga';
 import DetailsManga from '@/Components/Molecules/DetailsManga';
 import ExpandableText from '@/Components/Molecules/ExpandableText';
 import GuestLayout from '@/Layouts/GuestLayout';
@@ -7,7 +8,7 @@ import { cn } from '@/lib/utils';
 import { Head, usePage } from '@inertiajs/react';
 
 export default function Show() {
-    const { manga, statistics: stats } = usePage().props;
+    const { manga, statistics: stats, characters } = usePage().props;
 
     const {
         title,
@@ -20,8 +21,7 @@ export default function Show() {
         attributes: { originalLanguage, status, publicationDemographic, year },
         info,
     } = manga;
-    console.log({ stats, manga });
-    console.log(typeof info);
+    console.log({ stats, manga, characters });
 
     return (
         <GuestLayout className="bg-plumpPurple">
@@ -35,11 +35,11 @@ export default function Show() {
             ></div>
             <section className="bg-plumpPurpleLight">
                 <div className="container flex gap-4 py-6">
-                    <div className="">
-                        <figure className="sticky top-0 min-w-44">
+                    <div className="relative -top-40">
+                        <figure className="sticky top-5 min-w-44">
                             <img
                                 src={thumbnailSm}
-                                className="aspect-[7/10] w-64 rounded-xl border-2 border-plumpPurpleDark object-cover object-center transition-all duration-200 ease-linear"
+                                className="aspect-[17/26] w-64 rounded-sm border-4 border-plumpPurpleLight object-cover object-center transition-all duration-200 ease-linear"
                                 alt="poster"
                             />
                         </figure>
@@ -65,12 +65,18 @@ export default function Show() {
 
                         <ExpandableText text={description} />
                     </div>
-                    <div className="flex min-w-64 flex-col px-4 font-poppins text-sm text-plumpPurpleDark">
-                        <div className="space-y-1 rounded-xl border border-plumpPurpleDark px-4 py-10 font-sintony shadow-sm shadow-plumpPurpleDark">
-                            <h5 className="text-lg font-bold">
+                    <div className="flex min-w-72 flex-col px-4 py-10 font-poppins text-sm text-plumpPurpleDark">
+                        <div className="mb-6">
+                            <h5 className="mb-2 text-lg font-bold">
                                 Detalles del manga
                             </h5>
                             <DetailsManga data={info} />
+                        </div>
+                        <div>
+                            <h5 className="mb-2 text-lg font-bold">
+                                Personajes
+                            </h5>
+                            <CharactersManga characters={characters} />
                         </div>
                     </div>
                 </div>

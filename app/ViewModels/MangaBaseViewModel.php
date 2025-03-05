@@ -129,4 +129,6 @@ abstract class MangaBaseViewModel extends ViewModel
             ($descriptions['en'] ??
                 (array_values($descriptions)[0] ?? 'No existe descripción'));
     }
+
+    protected function getCharacters(string $malId) {}
 }
