@@ -24,9 +24,13 @@ Route::get('/dashboard', function () {
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-Route::get('/manga/{id}/{slug?}', [MangaController::class, 'show'])->name(
-    'manga.show'
-);
+Route::get('/manga/{id}/chapters', [MangaController::class, 'getMangaChapters'])
+    ->whereUuid('id')
+    ->name('manga.chapters');
+
+Route::get('/manga/{id}/{slug?}', [MangaController::class, 'show'])
+    ->whereUuid('id')
+    ->name('manga.show');
 Route::get('/mangatwo/{id}/{slug?}', [MangaController::class, 'showTwo'])->name(
     'manga.showtwo'
 );

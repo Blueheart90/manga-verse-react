@@ -8,6 +8,7 @@ use App\Services\MangaService;
 use App\Services\MangaServicetest;
 use App\ViewModels\IndexMangaViewModel;
 use App\ViewModels\ShowMangaViewModel;
+use Illuminate\Http\Request;
 use Inertia\Response;
 
 class MangaController extends Controller
@@ -32,10 +33,14 @@ class MangaController extends Controller
         return Inertia::render('Manga/Welcome', $mangaViewModel);
     }
 
-    public function show(string $id, string $slug): Response
+    public function show(string $id, string $slug, Request $request): Response
     {
+        $limit = $request->query('limit', 15);
+        $offset = $request->query('offset', 0);
+
         $mangaDetails = $this->mangaService->getManga($id);
         $mangaStatistics = $this->mangaService->getMangaStats($id);
+        // $chapters = $this->mangaService->getChapters($id, $limit);
 
         $malId = $mangaDetails['attributes']['links']['mal'] ?? null;
         if (isset($malId)) {
@@ -50,7 +55,22 @@ class MangaController extends Controller
             $mangaCharacter
         );
 
-        return Inertia::render('Manga/Show', $viewModel);
+        return Inertia::render('Manga/Show', [
+            'data' => $viewModel,
+            // 'chapters' => $chapters,
+            'chapters' => fn() => $this->mangaService->getChapters(
+                $id,
+                $limit,
+                $offset
+            ),
+        ]);
+    }
+
+    public function getMangaChapters(string $id, Request $request)
+    {
+        $limit = $request->query('limit', 15);
+        $offset = $request->query('offset', 0);
+        return $this->mangaService->getChapters($id, $limit, $offset);
     }
     public function showTwo(string $id, string $slug): Response
     {

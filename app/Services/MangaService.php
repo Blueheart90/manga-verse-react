@@ -147,10 +147,9 @@ class MangaService
             'mangadex_recently_added_mangas',
             60 * 60,
             function () use ($queryParams) {
-                $response = $this->mangadexHttpClient->get(
-                    '/manga',
-                    $queryParams
-                );
+                $response = $this->mangadexHttpClient->get('/manga', [
+                    'query' => $queryParams,
+                ]);
 
                 return $response->getStatusCode() === 200
                     ? json_decode($response->getBody()->getContents(), true)[
@@ -174,10 +173,9 @@ class MangaService
             'mangadex_last_update_chapters',
             60 * 60,
             function () use ($queryParams) {
-                $response = $this->mangadexHttpClient->get(
-                    '/chapter',
-                    $queryParams
-                );
+                $response = $this->mangadexHttpClient->get('/chapter', [
+                    'query' => $queryParams,
+                ]);
 
                 return $response->getStatusCode() === 200
                     ? json_decode($response->getBody()->getContents(), true)[
@@ -233,7 +231,9 @@ class MangaService
                 'pornographic',
             ],
         ];
-        $response = $this->mangadexHttpClient->get('/manga', $queryParams);
+        $response = $this->mangadexHttpClient->get('/manga', [
+            'query' => $queryParams,
+        ]);
         return json_decode($response->getBody()->getContents(), true)['data'];
     }
 
@@ -280,4 +280,157 @@ class MangaService
             })
             ->toArray();
     }
+
+    public function getChapters(
+        string $mangaId,
+        int $limit = 10,
+        int $offset = 0
+    ) {
+        $queryParams = [
+            'limit' => $limit,
+            'offset' => $offset,
+            'includes' => ['scanlation_group', 'user'],
+            'order' => [
+                'volume' => 'asc',
+                'chapter' => 'asc',
+            ],
+            'contentRating' => [
+                'safe',
+                'suggestive',
+                'erotica',
+                'pornographic',
+            ],
+            'translatedLanguage' => ['es-la', 'es', 'en'],
+        ];
+
+        $response = $this->mangadexHttpClient->get("/manga/$mangaId/feed", [
+            'query' => $queryParams,
+        ]);
+
+        $chapters = json_decode($response->getBody()->getContents(), true);
+
+        $processedData = collect($chapters['data'])
+            ->map(function ($chapter) {
+                return collect($chapter)->merge([
+                    'scanlation_group' => $this->extractRelationshipAttribute(
+                        $chapter['relationships'],
+                        'scanlation_group',
+                        'name'
+                    ),
+                    'user' => $this->extractRelationshipAttribute(
+                        $chapter['relationships'],
+                        'user',
+                        'username'
+                    ),
+                ]);
+            })
+            ->groupBy('attributes.volume')
+            ->map(function ($volumeChapters, $volume) {
+                return [
+                    'volume_number' => $volume,
+                    'total_chapters' => $volumeChapters->count(),
+                    'chapters' => $volumeChapters
+                        ->groupBy('attributes.chapter')
+                        ->map(function ($chapterTranslations) {
+                            return $chapterTranslations->map(function (
+                                $translation,
+                                $chapterKey
+                            ) {
+                                return [
+                                    'id' => $translation['id'],
+                                    'language' =>
+                                        $translation['attributes'][
+                                            'translatedLanguage'
+                                        ],
+                                    'title' =>
+                                        $translation['attributes']['title'] ??
+                                        null,
+                                    'scanlation_group' =>
+                                        $translation['scanlation_group'],
+                                    'user' => $translation['user'],
+                                    'external_url' =>
+                                        $translation['attributes'][
+                                            'externalUrl'
+                                        ],
+                                    'pages' =>
+                                        $translation['attributes']['pages'],
+                                ];
+                            });
+                        })
+                        ->toArray(),
+                ];
+            })
+            ->values()
+            ->toArray();
+
+        // Reconstruir la respuesta completa de la API
+        return [
+            'result' => $chapters['result'],
+            'response' => $chapters['response'],
+            'data' => $processedData,
+            'limit' => $chapters['limit'],
+            'offset' => $chapters['offset'],
+            'total' => $chapters['total'],
+        ];
+    }
+
+    private function extractRelationshipAttribute(
+        $relationships,
+        $type,
+        $attribute
+    ) {
+        $relationship = collect($relationships)->firstWhere('type', $type);
+        return $relationship['attributes'][$attribute] ?? null;
+    }
+    // public function getChapters(
+    //     string $mangaId,
+    //     int $limit = 10,
+    //     int $offset = 0
+    // ) {
+    //     $queryParams = [
+    //         'limit' => $limit,
+    //         'offset' => $offset,
+    //         'includes' => ['scanlation_group', 'user'],
+    //         'order' => [
+    //             'volume' => 'asc',
+    //             'chapter' => 'asc',
+    //         ],
+    //         'contentRating' => [
+    //             'safe',
+    //             'suggestive',
+    //             'erotica',
+    //             'pornographic',
+    //         ],
+    //         'translatedLanguage' => ['es-la', 'es', 'en'],
+    //     ];
+
+    //     $response = $this->mangadexHttpClient->get("/manga/$mangaId/feed", [
+    //         'query' => $queryParams,
+    //     ]);
+
+    //     $chapters = json_decode($response->getBody()->getContents(), true)[
+    //         'data'
+    //     ];
+
+    //     return collect($chapters)
+    //         ->map(function ($chapter) {
+    //             $scanlationGroup = collect(
+    //                 $chapter['relationships']
+    //             )->firstWhere('type', 'scanlation_group');
+    //             $user = collect($chapter['relationships'])->firstWhere(
+    //                 'type',
+    //                 'user'
+    //             );
+    //             return collect($chapter)->merge([
+    //                 'scanlation_group' =>
+    //                     $scanlationGroup['attributes']['name'],
+    //                 'user' => $user['attributes']['username'],
+    //             ]);
+    //         })
+    //         ->groupBy('attributes.volume')
+    //         ->map(function ($volumeChapters) {
+    //             return $volumeChapters->groupBy('attributes.chapter'); // Agrupar por capítulo dentro del volumen
+    //         })
+    //         ->toArray();
+    // }
 }

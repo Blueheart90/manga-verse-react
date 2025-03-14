@@ -7,6 +7,7 @@ export default function Flag({ flag, lang, ...props }) {
         fr: 'fr',
         cn: 'cn',
         tw: 'tw',
+        'es-la': 'mx',
     };
     const flagCode = languageFlags[lang] || 'us';
     const urlFlag = `https://mangadex.org/img/flags/${flag ?? flagCode}.svg`;

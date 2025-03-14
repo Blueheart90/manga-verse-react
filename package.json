@@ -26,6 +26,7 @@
     },
     "dependencies": {
         "clsx": "^2.1.1",
+        "react-infinite-scroll-component": "^6.1.0",
         "react-share": "^5.2.0",
         "swiper": "^11.2.2",
         "tailwind-merge": "^3.0.1"
