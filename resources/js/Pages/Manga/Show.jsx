@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils';
 
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
+import { create } from 'zustand';
 
 export default function Show(props) {
     console.log({ props });
@@ -123,6 +124,12 @@ export default function Show(props) {
         // });
     };
 
+    const useStore = create((set) => ({
+        bears: 0,
+        increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
+        removeAllBears: () => set({ bears: 0 }),
+        updateBears: (newBears) => set({ bears: newBears }),
+    }));
     return (
         <GuestLayout className="bg-plumpPurple">
             <Head title={manga.title} />
