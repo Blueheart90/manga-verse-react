@@ -14,8 +14,8 @@ import Library from '../Atoms/SvgIcons/Library';
 export default function Disclosures({ volumes }) {
     return (
         <>
-            {volumes.map((vol) => (
-                <Disclosure key={vol['volume_number']}>
+            {volumes.map((vol, indexVol) => (
+                <Disclosure defaultOpen={true} key={vol['volume_number']}>
                     <DisclosureButton className="group flex w-full items-center justify-between border-l-4 border-transparent p-2 text-plumpPurpleDark transition-all duration-200 hover:border-plumpPurple hover:bg-plumpPurpleLight">
                         <div className="flex gap-2">
                             <Library className="size-6" />
@@ -36,8 +36,11 @@ export default function Disclosures({ volumes }) {
                         className="origin-top text-sm text-plumpPurpleDark transition duration-200 ease-out data-[closed]:-translate-y-4 data-[closed]:opacity-0"
                     >
                         {Object.entries(vol.chapters).map(
-                            ([chapterNum, data]) => (
+                            ([chapterNum, data], indexChapter) => (
                                 <Disclosure
+                                    defaultOpen={
+                                        indexVol === 0 && indexChapter === 0
+                                    }
                                     key={`vol${vol['volume_number']}-ch${chapterNum}`}
                                 >
                                     <DisclosureButton as="div">

@@ -35,7 +35,7 @@ class MangaController extends Controller
 
     public function show(string $id, string $slug, Request $request): Response
     {
-        $limit = $request->query('limit', 15);
+        $limit = $request->query('limit', 20);
         $offset = $request->query('offset', 0);
 
         $mangaDetails = $this->mangaService->getManga($id);
@@ -58,11 +58,6 @@ class MangaController extends Controller
         return Inertia::render('Manga/Show', [
             'data' => $viewModel,
             // 'chapters' => $chapters,
-            'chapters' => fn() => $this->mangaService->getChapters(
-                $id,
-                $limit,
-                $offset
-            ),
         ]);
     }
 

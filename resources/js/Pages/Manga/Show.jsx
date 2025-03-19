@@ -2,34 +2,37 @@ import Tags from '@/Components/Atoms/Tags';
 import Title from '@/Components/Atoms/Title';
 import CharactersManga from '@/Components/Molecules/CharactersManga';
 import DetailsManga from '@/Components/Molecules/DetailsManga';
-import Disclosures from '@/Components/Molecules/Disclosures';
 import ExpandableText from '@/Components/Molecules/ExpandableText';
-import Paginate from '@/Components/Molecules/Paginate';
+import MangaVols from '@/Components/Organisms/MangaVols';
 import Tabs from '@/Components/Organisms/Tabs';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { cn } from '@/lib/utils';
-
-import { Head, Link, router, usePage } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import { useState } from 'react';
-import { create } from 'zustand';
+import useSWR from 'swr';
 
-export default function Show(props) {
-    console.log({ props });
-
+export default function Show() {
     const {
-        data: { manga, characters, statistics: stats },
-        chapters,
+        data: { manga, characters },
     } = usePage().props;
 
-    const [loadedChapters, setLoadedChapters] = useState(chapters.data);
-    const [newChapters, setNewChapters] = useState([]);
-    const [currentOffset, setCurrentOffset] = useState(
-        chapters.offset + chapters.limit,
-    );
-    const [hasMore, setHasMore] = useState(
-        chapters.offset + chapters.limit < chapters.total,
-    );
     const [currentPage, setCurrentPage] = useState(1);
+
+    const limit = 100;
+    const offset = (currentPage - 1) * limit;
+
+    const {
+        data: chapters,
+        error,
+        isLoading,
+    } = useSWR(
+        route('manga.chapters', { id: manga.id, limit, offset }),
+        (url) => fetch(url).then((res) => res.json()),
+    );
+
+    const totalPages = Math.ceil(chapters?.total / limit);
+
+    console.log({ totalPages });
 
     const tabs = [
         {
@@ -55,81 +58,7 @@ export default function Show(props) {
         attributes: { originalLanguage, status, publicationDemographic, year },
         info,
     } = manga;
-    console.log({ 'chapters size': loadedChapters.length });
 
-    const fetchMoreData = () => {
-        console.log('agregando chaps');
-
-        router.reload({
-            data: {
-                offset: currentOffset,
-                limit: chapters.limit,
-            },
-            only: ['chapters'],
-            preserveState: true,
-            onSuccess: (page) => {
-                const newChaptersData = page.props.chapters;
-                setLoadedChapters((prevChapters) => [
-                    ...prevChapters,
-                    ...newChaptersData.data,
-                ]);
-                setCurrentOffset(
-                    newChaptersData.offset + newChaptersData.limit,
-                );
-                setHasMore(
-                    newChaptersData.offset + newChaptersData.limit <
-                        newChaptersData.total,
-                );
-            },
-        });
-
-        // router.visit(`/manga/${manga.id}/chapters`, {
-        //     data: {
-        //         offset: currentOffset,
-        //         limit: chapters.limit,
-        //     },
-        //     only: ['chapters'],
-        //     preserveState: true,
-        //     onSuccess: () => {
-        //         const { chapters: newChaptersData } = usePage().props;
-        //         setLoadedChapters([...loadedChapters, ...newChaptersData.data]);
-        //         setCurrentOffset(
-        //             newChaptersData.offset + newChaptersData.limit,
-        //         );
-        //         setHasMore(
-        //             newChaptersData.offset + newChaptersData.limit <
-        //                 newChaptersData.total,
-        //         );
-        //     },
-        // });
-        // router.reload({
-        //     data: {
-        //         offset: currentOffset,
-        //         limit: chapters.limit,
-        //     },
-        //     only: ['chapters'],
-        //     preserveState: true,
-        //     onSuccess: () => {
-        //         console.log('exito!');
-        //         // const { chapters: newChaptersData } = usePage().props;
-        //         // setLoadedChapters([...loadedChapters, ...newChaptersData.data]);
-        //         // setCurrentOffset(
-        //         //     newChaptersData.offset + newChaptersData.limit,
-        //         // );
-        //         // setHasMore(
-        //         //     newChaptersData.offset + newChaptersData.limit <
-        //         //         newChaptersData.total,
-        //         // );
-        //     },
-        // });
-    };
-
-    const useStore = create((set) => ({
-        bears: 0,
-        increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
-        removeAllBears: () => set({ bears: 0 }),
-        updateBears: (newBears) => set({ bears: newBears }),
-    }));
     return (
         <GuestLayout className="bg-plumpPurple">
             <Head title={manga.title} />
@@ -172,36 +101,23 @@ export default function Show(props) {
                             </div>
 
                             <ExpandableText text={description} />
-                            <Link
-                                href={route('manga.show', {
-                                    id: manga.id,
-                                    slug: manga.slug,
-                                    limit: chapters.limit,
-                                    offset: currentOffset,
-                                })}
-                                only={['chapters']}
-                                preserveScroll
-                            >
-                                Cargar chapters
-                            </Link>
-                            <button
-                                className="my-4 border"
-                                onClick={fetchMoreData}
-                            >
-                                Test Partial reloads
-                            </button>
+
                             <Tabs tabs={tabs} />
 
-                            <Disclosures volumes={loadedChapters} />
-
-                            <Paginate
-                                totalPages={100}
-                                setCurrentPage={setCurrentPage}
-                                currentPage={currentPage}
-                            />
+                            {isLoading ? (
+                                <div>Loading...</div>
+                            ) : (
+                                <MangaVols
+                                    volumes={chapters.data}
+                                    setCurrentPage={setCurrentPage}
+                                    currentPage={currentPage}
+                                    totalPages={totalPages}
+                                />
+                            )}
+                            {error && <div>{error.message}</div>}
                         </div>
                     </div>
-                    <div className="flex min-w-72 flex-col px-4 py-10 font-poppins text-sm text-plumpPurpleDark">
+                    <div className="flex w-1/4 min-w-72 flex-col px-4 py-10 font-poppins text-sm text-plumpPurpleDark">
                         <div className="mb-6">
                             <h5 className="mb-2 text-lg font-bold">
                                 Detalles del manga
