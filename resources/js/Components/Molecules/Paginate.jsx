@@ -6,43 +6,33 @@ export default function Paginate({ totalPages, currentPage, setCurrentPage }) {
     const [ArrPages, setArrPages] = useState([]);
 
     useEffect(() => {
-        // Devulve un array de 7 o menos dependiendo del numero de paginas totales
-        if (totalPages <= 4) {
-            setArrPages(Array.from({ length: totalPages }, (_, i) => i + 1));
-        } else {
-            setArrPages(Array.from({ length: 5 }, (_, i) => i + 1));
+        // Calcular el rango de páginas a mostrar
+        let start = Math.max(1, currentPage - 2);
+        let end = Math.min(totalPages, start + 4);
+
+        // Ajustar el inicio si estamos cerca del final
+        if (end === totalPages) {
+            start = Math.max(1, end - 4);
         }
-    }, [totalPages]);
+
+        // Crear el array de páginas
+        const newPages = Array.from(
+            { length: end - start + 1 },
+            (_, i) => start + i,
+        );
+
+        setArrPages(newPages);
+    }, [currentPage, totalPages]);
 
     const handlePreviousPage = () => {
         if (currentPage > 1) {
-            const firstPageIndex = ArrPages[0];
-            const currentPageIndex = ArrPages.indexOf(currentPage);
-
-            if (currentPageIndex > 2) {
-                setCurrentPage(currentPage - 1);
-            } else if (firstPageIndex > 1) {
-                setCurrentPage(currentPage - 1);
-                setArrPages(ArrPages.map((page) => page - 1));
-            } else {
-                setCurrentPage(currentPage - 1);
-            }
+            setCurrentPage(currentPage - 1);
         }
     };
 
     const handleNextPage = () => {
         if (currentPage < totalPages) {
-            const currentPageIndex = ArrPages.indexOf(currentPage);
-            const isLastPage = ArrPages[ArrPages.length - 1] === totalPages;
-
-            if (currentPageIndex < 2) {
-                setCurrentPage(currentPage + 1);
-            } else if (!isLastPage) {
-                setArrPages(ArrPages.map((page) => page + 1));
-                setCurrentPage(currentPage + 1);
-            } else {
-                setCurrentPage(currentPage + 1);
-            }
+            setCurrentPage(currentPage + 1);
         }
     };
 

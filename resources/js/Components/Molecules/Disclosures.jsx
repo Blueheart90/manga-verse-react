@@ -90,7 +90,13 @@ export default function Disclosures({ volumes }) {
                                             <div className="flex gap-4">
                                                 <span className="flex gap-1">
                                                     <Clock className="size-5" />
-                                                    Hace 3 Horas
+                                                    <span>
+                                                        {
+                                                            chapter[
+                                                                'diff_publish_at'
+                                                            ]
+                                                        }
+                                                    </span>
                                                 </span>
                                                 <EyeSlash className="size-5" />
                                             </div>

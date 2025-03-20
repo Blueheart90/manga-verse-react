@@ -352,6 +352,15 @@ class MangaService
                                         $translation['attributes'][
                                             'externalUrl'
                                         ],
+                                    'created_at' =>
+                                        $translation['attributes']['createdAt'],
+                                    'diff_publish_at' => Carbon::parse(
+                                        $translation['attributes']['publishAt']
+                                    )->diffForHumans(),
+                                    'publish_at' =>
+                                        $translation['attributes']['publishAt'],
+                                    'updated_at' =>
+                                        $translation['attributes']['updatedAt'],
                                     'pages' =>
                                         $translation['attributes']['pages'],
                                 ];

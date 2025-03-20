@@ -32,7 +32,7 @@ export default function Show() {
 
     const totalPages = Math.ceil(chapters?.total / limit);
 
-    console.log({ totalPages });
+    console.log({ chapters, manga });
 
     const tabs = [
         {
