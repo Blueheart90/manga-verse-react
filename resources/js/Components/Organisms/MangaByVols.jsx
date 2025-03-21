@@ -1,7 +1,7 @@
-import Disclosures from '../Molecules/Disclosures';
+import DisclosuresByVols from '../Molecules/DisclosuresByVols';
 import Paginate from '../Molecules/Paginate';
 
-export default function MangaVols({
+export default function MangaByVols({
     volumes,
     setCurrentPage,
     currentPage,
@@ -9,7 +9,7 @@ export default function MangaVols({
 }) {
     return (
         <>
-            <Disclosures volumes={volumes} />
+            <DisclosuresByVols volumes={volumes} />
 
             <Paginate
                 totalPages={totalPages}

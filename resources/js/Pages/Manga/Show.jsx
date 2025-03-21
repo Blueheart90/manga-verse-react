@@ -1,9 +1,10 @@
+import Loading from '@/Components/Atoms/SvgIcons/Loading';
 import Tags from '@/Components/Atoms/Tags';
 import Title from '@/Components/Atoms/Title';
 import CharactersManga from '@/Components/Molecules/CharactersManga';
 import DetailsManga from '@/Components/Molecules/DetailsManga';
 import ExpandableText from '@/Components/Molecules/ExpandableText';
-import MangaVols from '@/Components/Organisms/MangaVols';
+import MangaByVols from '@/Components/Organisms/MangaByVols';
 import Tabs from '@/Components/Organisms/Tabs';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { cn } from '@/lib/utils';
@@ -105,15 +106,18 @@ export default function Show() {
                             <Tabs tabs={tabs} />
 
                             {isLoading ? (
-                                <div>Loading...</div>
+                                <div className="flex h-dvh items-center justify-center">
+                                    <Loading className="size-20 text-plumpPurpleDark" />
+                                </div>
                             ) : (
-                                <MangaVols
+                                <MangaByVols
                                     volumes={chapters.data}
                                     setCurrentPage={setCurrentPage}
                                     currentPage={currentPage}
                                     totalPages={totalPages}
                                 />
                             )}
+
                             {error && <div>{error.message}</div>}
                         </div>
                     </div>

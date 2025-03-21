@@ -11,7 +11,7 @@ import Document from '../Atoms/SvgIcons/Document';
 import EyeSlash from '../Atoms/SvgIcons/EyeSlash';
 import Group from '../Atoms/SvgIcons/Group';
 import Library from '../Atoms/SvgIcons/Library';
-export default function Disclosures({ volumes }) {
+export default function DisclosuresByVols({ volumes }) {
     return (
         <>
             {volumes.map((vol, indexVol) => (

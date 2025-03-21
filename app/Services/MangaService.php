@@ -309,9 +309,40 @@ class MangaService
 
         $chapters = json_decode($response->getBody()->getContents(), true);
 
-        $processedData = collect($chapters['data'])
-            ->map(function ($chapter) {
-                return collect($chapter)->merge([
+        $groupedByChapter = collect($chapters['data'])
+            ->groupBy('attributes.chapter')
+            ->map(
+                fn($chap) => $chap->map(
+                    fn($item, $chapterKey) => [
+                        'id' => $item['id'],
+                        'language' => $item['attributes']['translatedLanguage'],
+                        'title' => $item['attributes']['title'] ?? null,
+                        'scanlation_group' => $this->extractRelationshipAttribute(
+                            $item['relationships'],
+                            'scanlation_group',
+                            'name'
+                        ),
+                        'user' => $this->extractRelationshipAttribute(
+                            $item['relationships'],
+                            'user',
+                            'username'
+                        ),
+                        'external_url' => $item['attributes']['externalUrl'],
+                        'created_at' => $item['attributes']['createdAt'],
+                        'diff_publish_at' => Carbon::parse(
+                            $item['attributes']['publishAt']
+                        )->diffForHumans(),
+                        'publish_at' => $item['attributes']['publishAt'],
+                        'updated_at' => $item['attributes']['updatedAt'],
+                        'pages' => $item['attributes']['pages'],
+                    ]
+                )
+            )
+            ->toArray();
+
+        $groupedByVolume = collect($chapters['data'])
+            ->map(
+                fn($chapter) => collect($chapter)->merge([
                     'scanlation_group' => $this->extractRelationshipAttribute(
                         $chapter['relationships'],
                         'scanlation_group',
@@ -322,21 +353,20 @@ class MangaService
                         'user',
                         'username'
                     ),
-                ]);
-            })
+                ])
+            )
             ->groupBy('attributes.volume')
-            ->map(function ($volumeChapters, $volume) {
-                return [
+            ->map(
+                fn($volumeChapters, $volume) => [
                     'volume_number' => $volume,
                     'total_chapters' => $volumeChapters->count(),
                     'chapters' => $volumeChapters
                         ->groupBy('attributes.chapter')
-                        ->map(function ($chapterTranslations) {
-                            return $chapterTranslations->map(function (
-                                $translation,
-                                $chapterKey
-                            ) {
-                                return [
+                        ->map(
+                            fn(
+                                $chapterTranslations
+                            ) => $chapterTranslations->map(
+                                fn($translation, $chapterKey) => [
                                     'id' => $translation['id'],
                                     'language' =>
                                         $translation['attributes'][
@@ -363,12 +393,12 @@ class MangaService
                                         $translation['attributes']['updatedAt'],
                                     'pages' =>
                                         $translation['attributes']['pages'],
-                                ];
-                            });
-                        })
+                                ]
+                            )
+                        )
                         ->toArray(),
-                ];
-            })
+                ]
+            )
             ->values()
             ->toArray();
 
@@ -376,10 +406,11 @@ class MangaService
         return [
             'result' => $chapters['result'],
             'response' => $chapters['response'],
-            'data' => $processedData,
+            'data' => $groupedByVolume,
             'limit' => $chapters['limit'],
             'offset' => $chapters['offset'],
             'total' => $chapters['total'],
+            'gpchat' => $groupedByChapter,
         ];
     }
 
