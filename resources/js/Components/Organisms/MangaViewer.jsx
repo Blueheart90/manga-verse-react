@@ -1,23 +1,22 @@
 import { useState } from 'react';
 import useSWR from 'swr';
 import Loading from '../Atoms/SvgIcons/Loading';
-import MangaByVols from './MangaByVols';
+import MangaList from './MangaList';
 
-export default function MangaVolumeViewer({ mangaId }) {
+export default function MangaViewer({ mangaId, type = 'volumes' }) {
     const [currentPage, setCurrentPage] = useState(1);
 
     const limit = 100;
     const offset = (currentPage - 1) * limit;
 
-    const {
-        data: chapters,
-        error,
-        isLoading,
-    } = useSWR(route('manga.chapters', { id: mangaId, limit, offset }), (url) =>
-        fetch(url).then((res) => res.json()),
+    const strRoute = type === 'volumes' ? 'manga.volumes' : 'manga.chapters';
+
+    const { data, error, isLoading } = useSWR(
+        route(strRoute, { id: mangaId, limit, offset }),
+        (url) => fetch(url).then((res) => res.json()),
     );
 
-    const totalPages = Math.ceil(chapters?.total / limit);
+    const totalPages = Math.ceil(data?.total / limit);
     return (
         <div>
             {isLoading ? (
@@ -25,8 +24,9 @@ export default function MangaVolumeViewer({ mangaId }) {
                     <Loading className="size-20 text-plumpPurpleDark" />
                 </div>
             ) : (
-                <MangaByVols
-                    volumes={chapters.data}
+                <MangaList
+                    data={data.data}
+                    type={type}
                     setCurrentPage={setCurrentPage}
                     currentPage={currentPage}
                     totalPages={totalPages}

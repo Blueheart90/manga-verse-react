@@ -59,6 +59,12 @@ class MangaController extends Controller
         $offset = $request->query('offset', 0);
         return $this->mangaService->getChapters($id, $limit, $offset);
     }
+    public function getMangaVolumes(string $id, Request $request)
+    {
+        $limit = $request->query('limit', 100);
+        $offset = $request->query('offset', 0);
+        return $this->mangaService->getVolumes($id, $limit, $offset);
+    }
     public function showTwo(string $id, string $slug): Response
     {
         $mangaInfo = $this->mangaService->getManga($id);

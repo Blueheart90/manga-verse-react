@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Services;
-
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Collection;
@@ -10,6 +9,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Promise\PromiseInterface;
+use Illuminate\Support\Facades\Log;
 
 class MangaService
 {
@@ -281,12 +281,9 @@ class MangaService
             ->toArray();
     }
 
-    public function getChapters(
-        string $mangaId,
-        int $limit = 10,
-        int $offset = 0
-    ) {
-        $queryParams = [
+    private function getChapterQueryParams(int $limit, int $offset): array
+    {
+        return [
             'limit' => $limit,
             'offset' => $offset,
             'includes' => ['scanlation_group', 'user'],
@@ -302,43 +299,85 @@ class MangaService
             ],
             'translatedLanguage' => ['es-la', 'es', 'en'],
         ];
+    }
 
+    private function fetchChapters(string $mangaId, array $queryParams): array
+    {
         $response = $this->mangadexHttpClient->get("/manga/$mangaId/feed", [
             'query' => $queryParams,
         ]);
 
-        $chapters = json_decode($response->getBody()->getContents(), true);
+        return json_decode($response->getBody()->getContents(), true);
+    }
+
+    private function formatChapterData($chapter): array
+    {
+        return [
+            'id' => $chapter['id'],
+            'language' => $chapter['attributes']['translatedLanguage'],
+            'title' => $chapter['attributes']['title'] ?? null,
+            'scanlation_group' => $this->extractRelationshipAttribute(
+                $chapter['relationships'],
+                'scanlation_group',
+                'name'
+            ),
+            'user' => $this->extractRelationshipAttribute(
+                $chapter['relationships'],
+                'user',
+                'username'
+            ),
+            'external_url' => $chapter['attributes']['externalUrl'],
+            'created_at' => $chapter['attributes']['createdAt'],
+            'diff_publish_at' => Carbon::parse(
+                $chapter['attributes']['publishAt']
+            )->diffForHumans(),
+            'publish_at' => $chapter['attributes']['publishAt'],
+            'updated_at' => $chapter['attributes']['updatedAt'],
+            'pages' => $chapter['attributes']['pages'],
+        ];
+    }
+
+    private function buildApiResponse(array $chapters, $data): array
+    {
+        return [
+            'result' => $chapters['result'],
+            'response' => $chapters['response'],
+            'data' => $data,
+            'limit' => $chapters['limit'],
+            'offset' => $chapters['offset'],
+            'total' => $chapters['total'],
+        ];
+    }
+
+    public function getChapters(
+        string $mangaId,
+        int $limit = 10,
+        int $offset = 0
+    ) {
+        $queryParams = $this->getChapterQueryParams($limit, $offset);
+        $chapters = $this->fetchChapters($mangaId, $queryParams);
 
         $groupedByChapter = collect($chapters['data'])
             ->groupBy('attributes.chapter')
             ->map(
                 fn($chap) => $chap->map(
-                    fn($item, $chapterKey) => [
-                        'id' => $item['id'],
-                        'language' => $item['attributes']['translatedLanguage'],
-                        'title' => $item['attributes']['title'] ?? null,
-                        'scanlation_group' => $this->extractRelationshipAttribute(
-                            $item['relationships'],
-                            'scanlation_group',
-                            'name'
-                        ),
-                        'user' => $this->extractRelationshipAttribute(
-                            $item['relationships'],
-                            'user',
-                            'username'
-                        ),
-                        'external_url' => $item['attributes']['externalUrl'],
-                        'created_at' => $item['attributes']['createdAt'],
-                        'diff_publish_at' => Carbon::parse(
-                            $item['attributes']['publishAt']
-                        )->diffForHumans(),
-                        'publish_at' => $item['attributes']['publishAt'],
-                        'updated_at' => $item['attributes']['updatedAt'],
-                        'pages' => $item['attributes']['pages'],
-                    ]
+                    fn($item, $chapterKey) => $this->formatChapterData($item)
                 )
             )
             ->toArray();
+
+        dump($groupedByChapter);
+        // logger('Chapters grouped by chapter', $groupedByChapter);
+        return $this->buildApiResponse($chapters, $groupedByChapter);
+    }
+
+    public function getVolumes(
+        string $mangaId,
+        int $limit = 10,
+        int $offset = 0
+    ) {
+        $queryParams = $this->getChapterQueryParams($limit, $offset);
+        $chapters = $this->fetchChapters($mangaId, $queryParams);
 
         $groupedByVolume = collect($chapters['data'])
             ->map(
@@ -366,34 +405,9 @@ class MangaService
                             fn(
                                 $chapterTranslations
                             ) => $chapterTranslations->map(
-                                fn($translation, $chapterKey) => [
-                                    'id' => $translation['id'],
-                                    'language' =>
-                                        $translation['attributes'][
-                                            'translatedLanguage'
-                                        ],
-                                    'title' =>
-                                        $translation['attributes']['title'] ??
-                                        null,
-                                    'scanlation_group' =>
-                                        $translation['scanlation_group'],
-                                    'user' => $translation['user'],
-                                    'external_url' =>
-                                        $translation['attributes'][
-                                            'externalUrl'
-                                        ],
-                                    'created_at' =>
-                                        $translation['attributes']['createdAt'],
-                                    'diff_publish_at' => Carbon::parse(
-                                        $translation['attributes']['publishAt']
-                                    )->diffForHumans(),
-                                    'publish_at' =>
-                                        $translation['attributes']['publishAt'],
-                                    'updated_at' =>
-                                        $translation['attributes']['updatedAt'],
-                                    'pages' =>
-                                        $translation['attributes']['pages'],
-                                ]
+                                fn($translation) => $this->formatChapterData(
+                                    $translation
+                                )
                             )
                         )
                         ->toArray(),
@@ -402,16 +416,7 @@ class MangaService
             ->values()
             ->toArray();
 
-        // Reconstruir la respuesta completa de la API
-        return [
-            'result' => $chapters['result'],
-            'response' => $chapters['response'],
-            'data' => $groupedByVolume,
-            'limit' => $chapters['limit'],
-            'offset' => $chapters['offset'],
-            'total' => $chapters['total'],
-            'gpchat' => $groupedByChapter,
-        ];
+        return $this->buildApiResponse($chapters, $groupedByVolume);
     }
 
     private function extractRelationshipAttribute(
@@ -422,55 +427,4 @@ class MangaService
         $relationship = collect($relationships)->firstWhere('type', $type);
         return $relationship['attributes'][$attribute] ?? null;
     }
-    // public function getChapters(
-    //     string $mangaId,
-    //     int $limit = 10,
-    //     int $offset = 0
-    // ) {
-    //     $queryParams = [
-    //         'limit' => $limit,
-    //         'offset' => $offset,
-    //         'includes' => ['scanlation_group', 'user'],
-    //         'order' => [
-    //             'volume' => 'asc',
-    //             'chapter' => 'asc',
-    //         ],
-    //         'contentRating' => [
-    //             'safe',
-    //             'suggestive',
-    //             'erotica',
-    //             'pornographic',
-    //         ],
-    //         'translatedLanguage' => ['es-la', 'es', 'en'],
-    //     ];
-
-    //     $response = $this->mangadexHttpClient->get("/manga/$mangaId/feed", [
-    //         'query' => $queryParams,
-    //     ]);
-
-    //     $chapters = json_decode($response->getBody()->getContents(), true)[
-    //         'data'
-    //     ];
-
-    //     return collect($chapters)
-    //         ->map(function ($chapter) {
-    //             $scanlationGroup = collect(
-    //                 $chapter['relationships']
-    //             )->firstWhere('type', 'scanlation_group');
-    //             $user = collect($chapter['relationships'])->firstWhere(
-    //                 'type',
-    //                 'user'
-    //             );
-    //             return collect($chapter)->merge([
-    //                 'scanlation_group' =>
-    //                     $scanlationGroup['attributes']['name'],
-    //                 'user' => $user['attributes']['username'],
-    //             ]);
-    //         })
-    //         ->groupBy('attributes.volume')
-    //         ->map(function ($volumeChapters) {
-    //             return $volumeChapters->groupBy('attributes.chapter'); // Agrupar por capítulo dentro del volumen
-    //         })
-    //         ->toArray();
-    // }
 }

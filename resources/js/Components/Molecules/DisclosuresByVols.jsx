@@ -11,12 +11,15 @@ import Document from '../Atoms/SvgIcons/Document';
 import EyeSlash from '../Atoms/SvgIcons/EyeSlash';
 import Group from '../Atoms/SvgIcons/Group';
 import Library from '../Atoms/SvgIcons/Library';
-export default function DisclosuresByVols({ volumes }) {
+export default function DisclosuresByVols({ data }) {
     return (
         <>
-            {volumes.map((vol, indexVol) => (
-                <Disclosure defaultOpen={true} key={vol['volume_number']}>
-                    <DisclosureButton className="group flex w-full items-center justify-between border-l-4 border-transparent p-2 text-plumpPurpleDark transition-all duration-200 hover:border-plumpPurple hover:bg-plumpPurpleLight">
+            {data.map((vol, indexVol) => (
+                <Disclosure
+                    defaultOpen={indexVol === 0}
+                    key={vol['volume_number']}
+                >
+                    <DisclosureButton className="group flex w-full items-center justify-between border-l-4 border-transparent p-2 text-plumpPurpleDark transition-all duration-200 hover:border-plumpPurpleDark hover:bg-plumpPurpleLight">
                         <div className="flex gap-2">
                             <Library className="size-6" />
                             <p className="text-base">
@@ -38,13 +41,15 @@ export default function DisclosuresByVols({ volumes }) {
                         {Object.entries(vol.chapters).map(
                             ([chapterNum, data], indexChapter) => (
                                 <Disclosure
+                                    as="div"
+                                    className="ml-4"
                                     defaultOpen={
                                         indexVol === 0 && indexChapter === 0
                                     }
                                     key={`vol${vol['volume_number']}-ch${chapterNum}`}
                                 >
                                     <DisclosureButton as="div">
-                                        <div className="ml-4 flex cursor-pointer items-center gap-2 px-2 py-2 hover:bg-plumpPurpleLight">
+                                        <div className="flex cursor-pointer items-center gap-2 px-2 py-2 hover:bg-plumpPurpleLight">
                                             <Document className="size-6" />
 
                                             <span className="font-semibold">

@@ -28,6 +28,10 @@ Route::get('/manga/{id}/chapters', [MangaController::class, 'getMangaChapters'])
     ->whereUuid('id')
     ->name('manga.chapters');
 
+Route::get('/manga/{id}/volumes', [MangaController::class, 'getMangaVolumes'])
+    ->whereUuid('id')
+    ->name('manga.volumes');
+
 Route::get('/manga/{id}/{slug?}', [MangaController::class, 'show'])
     ->whereUuid('id')
     ->name('manga.show');

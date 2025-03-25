@@ -3,23 +3,29 @@ import {
     DisclosureButton,
     DisclosurePanel,
 } from '@headlessui/react';
+import Flag from '../Atoms/Flag';
+import ArrowCorner from '../Atoms/SvgIcons/ArrowCorner';
+import Clock from '../Atoms/SvgIcons/Clock';
+import Document from '../Atoms/SvgIcons/Document';
+import EyeSlash from '../Atoms/SvgIcons/EyeSlash';
+import Group from '../Atoms/SvgIcons/Group';
 
-export default function DisclosuresByChaps({ chapters }) {
+export default function DisclosuresByChaps({ data }) {
     return (
         <div>
-            {Object.entries(chapters).map(
-                ([chapterNum, data], indexChapter) => (
-                    <Disclosure>
+            {Object.entries(data).map(
+                ([chapterNum, chapters], indexChapter) => (
+                    <Disclosure key={chapterNum}>
                         <DisclosureButton as="div">
-                            <div className="ml-4 flex cursor-pointer items-center gap-2 px-2 py-2 hover:bg-plumpPurpleLight">
+                            <div className="flex cursor-pointer items-center gap-2 px-2 py-2 text-plumpPurpleDark hover:bg-plumpPurpleLight">
                                 <Document className="size-6" />
 
-                                <span className="font-semibold">
+                                <span className="text-base">
                                     Capitulo {chapterNum || 'Sin Clasificar'}
                                 </span>
                             </div>
                         </DisclosureButton>
-                        {data.map((chapter) => (
+                        {chapters.map((chapter) => (
                             <DisclosurePanel
                                 key={chapter.id}
                                 transition

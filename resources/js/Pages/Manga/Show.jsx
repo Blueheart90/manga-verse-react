@@ -1,54 +1,21 @@
-import Loading from '@/Components/Atoms/SvgIcons/Loading';
 import Tags from '@/Components/Atoms/Tags';
 import Title from '@/Components/Atoms/Title';
 import CharactersManga from '@/Components/Molecules/CharactersManga';
 import DetailsManga from '@/Components/Molecules/DetailsManga';
 import ExpandableText from '@/Components/Molecules/ExpandableText';
-import MangaByVols from '@/Components/Organisms/MangaByVols';
+import MangaViewer from '@/Components/Organisms/MangaViewer';
 import Tabs from '@/Components/Organisms/Tabs';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { cn } from '@/lib/utils';
 import { Head, usePage } from '@inertiajs/react';
-import { useState } from 'react';
-import useSWR from 'swr';
 
 export default function Show() {
     const {
         data: { manga, characters },
     } = usePage().props;
 
-    const [currentPage, setCurrentPage] = useState(1);
-
-    const limit = 100;
-    const offset = (currentPage - 1) * limit;
-
     const {
-        data: chapters,
-        error,
-        isLoading,
-    } = useSWR(
-        route('manga.chapters', { id: manga.id, limit, offset }),
-        (url) => fetch(url).then((res) => res.json()),
-    );
-
-    const totalPages = Math.ceil(chapters?.total / limit);
-
-    console.log({ chapters, manga });
-
-    const tabs = [
-        {
-            id: 1,
-            label: 'Lista de Capítulos',
-            Component: <p> Hola populares</p>,
-        },
-        {
-            id: 2,
-            label: 'Lista de Volúmenes',
-            Component: <p> Hola al aire</p>,
-        },
-    ];
-
-    const {
+        id,
         title,
         cover_art: coverArt,
         thumbnail_sm: thumbnailSm,
@@ -60,6 +27,19 @@ export default function Show() {
         info,
     } = manga;
 
+    console.log({ manga });
+    const tabs = [
+        {
+            id: 1,
+            label: 'Lista de Volúmenes',
+            Component: <MangaViewer mangaId={id} type="volumes" />,
+        },
+        {
+            id: 2,
+            label: 'Lista de Capítulos',
+            Component: <MangaViewer mangaId={id} type="chapters" />,
+        },
+    ];
     return (
         <GuestLayout className="bg-plumpPurple">
             <Head title={manga.title} />
@@ -103,22 +83,7 @@ export default function Show() {
 
                             <ExpandableText text={description} />
 
-                            <Tabs tabs={tabs} />
-
-                            {isLoading ? (
-                                <div className="flex h-dvh items-center justify-center">
-                                    <Loading className="size-20 text-plumpPurpleDark" />
-                                </div>
-                            ) : (
-                                <MangaByVols
-                                    volumes={chapters.data}
-                                    setCurrentPage={setCurrentPage}
-                                    currentPage={currentPage}
-                                    totalPages={totalPages}
-                                />
-                            )}
-
-                            {error && <div>{error.message}</div>}
+                            <Tabs className="mt-6" tabs={tabs} />
                         </div>
                     </div>
                     <div className="flex w-1/4 min-w-72 flex-col px-4 py-10 font-poppins text-sm text-plumpPurpleDark">
