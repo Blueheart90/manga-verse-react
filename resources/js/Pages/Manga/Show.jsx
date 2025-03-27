@@ -5,6 +5,7 @@ import DetailsManga from '@/Components/Molecules/DetailsManga';
 import ExpandableText from '@/Components/Molecules/ExpandableText';
 import MangaViewer from '@/Components/Organisms/MangaViewer';
 import Tabs from '@/Components/Organisms/Tabs';
+import PrimaryButton from '@/Components/PrimaryButton';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { cn } from '@/lib/utils';
 import { Head, usePage } from '@inertiajs/react';
@@ -56,9 +57,28 @@ export default function Show() {
                         <figure className="sticky top-5 min-w-44">
                             <img
                                 src={thumbnailSm}
-                                className="aspect-[17/26] w-64 rounded-sm border-4 border-white object-cover object-center transition-all duration-200 ease-linear"
+                                className="aspect-[17/26] w-64 rounded-md border-4 border-white object-cover object-center transition-all duration-200 ease-linear"
                                 alt="poster"
                             />
+                            <div className="relative mt-5 flex flex-col justify-center rounded-md border border-plumpPurple p-3">
+                                <span className="absolute -top-3 left-1/2 w-fit -translate-x-1/2 text-nowrap bg-white px-2 text-center text-base text-plumpPurpleDark">
+                                    Añadir a tu biblioteca
+                                </span>
+                                <div className="flex flex-col gap-2">
+                                    <PrimaryButton className="text-base normal-case">
+                                        Agregar a favoritos
+                                    </PrimaryButton>
+                                    <PrimaryButton className="bg-blue-500 text-base normal-case">
+                                        Quiero leerlo
+                                    </PrimaryButton>
+                                    <PrimaryButton className="bg-green-500 text-base normal-case">
+                                        Completado
+                                    </PrimaryButton>
+                                    <PrimaryButton className="bg-green-500 text-base normal-case">
+                                        En progreso
+                                    </PrimaryButton>
+                                </div>
+                            </div>
                         </figure>
                     </div>
                     <div className="flex flex-1 flex-col font-poppins">

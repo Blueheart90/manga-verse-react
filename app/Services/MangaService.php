@@ -360,15 +360,31 @@ class MangaService
         $groupedByChapter = collect($chapters['data'])
             ->groupBy('attributes.chapter')
             ->map(
-                fn($chap) => $chap->map(
-                    fn($item, $chapterKey) => $this->formatChapterData($item)
-                )
-            )
+                fn($chap) => $chap
+                    ->map(
+                        fn($item, $chapterKey) => $this->formatChapterData(
+                            $item
+                        )
+                    )
+                    ->values()
+            );
+
+        // Convertir a array indexado con la estructura deseada
+        $formattedChapters = $groupedByChapter
+            ->map(function ($content, $chapter) {
+                return [
+                    'chapter' => $chapter,
+                    'content' => $content->toArray(),
+                ];
+            })
+            ->sortBy(function ($item) {
+                // Poner capítulos vacíos al inicio, resto ordenados naturalmente
+                return $item['chapter'] === '' ? '' : $item['chapter'];
+            }, SORT_NATURAL)
+            ->values()
             ->toArray();
 
-        dump($groupedByChapter);
-        // logger('Chapters grouped by chapter', $groupedByChapter);
-        return $this->buildApiResponse($chapters, $groupedByChapter);
+        return $this->buildApiResponse($chapters, $formattedChapters);
     }
 
     public function getVolumes(
