@@ -281,15 +281,18 @@ class MangaService
             ->toArray();
     }
 
-    private function getChapterQueryParams(int $limit, int $offset): array
-    {
+    private function getChapterQueryParams(
+        int $limit,
+        int $offset,
+        string $order = 'asc'
+    ): array {
         return [
             'limit' => $limit,
             'offset' => $offset,
             'includes' => ['scanlation_group', 'user'],
             'order' => [
-                'volume' => 'asc',
-                'chapter' => 'asc',
+                'volume' => $order,
+                'chapter' => $order,
             ],
             'contentRating' => [
                 'safe',
@@ -352,9 +355,10 @@ class MangaService
     public function getChapters(
         string $mangaId,
         int $limit = 10,
-        int $offset = 0
+        int $offset = 0,
+        string $order = 'asc'
     ) {
-        $queryParams = $this->getChapterQueryParams($limit, $offset);
+        $queryParams = $this->getChapterQueryParams($limit, $offset, $order);
         $chapters = $this->fetchChapters($mangaId, $queryParams);
 
         $groupedByChapter = collect($chapters['data'])
@@ -384,15 +388,20 @@ class MangaService
             ->values()
             ->toArray();
 
+        $formattedChapters =
+            $order === 'desc'
+                ? collect($formattedChapters)->reverse()->values()->toArray()
+                : $formattedChapters;
         return $this->buildApiResponse($chapters, $formattedChapters);
     }
 
     public function getVolumes(
         string $mangaId,
         int $limit = 10,
-        int $offset = 0
+        int $offset = 0,
+        string $order = 'asc'
     ) {
-        $queryParams = $this->getChapterQueryParams($limit, $offset);
+        $queryParams = $this->getChapterQueryParams($limit, $offset, $order);
         $chapters = $this->fetchChapters($mangaId, $queryParams);
 
         $groupedByVolume = collect($chapters['data'])
@@ -417,21 +426,33 @@ class MangaService
                     'total_chapters' => $volumeChapters->count(),
                     'chapters' => $volumeChapters
                         ->groupBy('attributes.chapter')
-                        ->map(
-                            fn(
-                                $chapterTranslations
-                            ) => $chapterTranslations->map(
-                                fn($translation) => $this->formatChapterData(
-                                    $translation
-                                )
-                            )
-                        )
+                        ->map(function ($content, $chapter) {
+                            return [
+                                'chapter' => $chapter,
+                                'content' => $content
+                                    ->map(
+                                        fn(
+                                            $translation
+                                        ) => $this->formatChapterData(
+                                            $translation
+                                        )
+                                    )
+                                    ->values()
+                                    ->toArray(),
+                            ];
+                        })
+                        ->sortBy(function ($item) {
+                            return $item['chapter'] === ''
+                                ? ''
+                                : $item['chapter'];
+                        }, SORT_NATURAL)
+                        ->values()
                         ->toArray(),
                 ]
             )
             ->values()
             ->toArray();
-
+        dump($groupedByVolume);
         return $this->buildApiResponse($chapters, $groupedByVolume);
     }
 

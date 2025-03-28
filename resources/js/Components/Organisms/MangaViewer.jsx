@@ -5,6 +5,7 @@ import MangaList from './MangaList';
 
 export default function MangaViewer({ mangaId, type = 'volumes' }) {
     const [currentPage, setCurrentPage] = useState(1);
+    const [order, setOrder] = useState('asc');
 
     const limit = 100;
     const offset = (currentPage - 1) * limit;
@@ -12,7 +13,7 @@ export default function MangaViewer({ mangaId, type = 'volumes' }) {
     const strRoute = type === 'volumes' ? 'manga.volumes' : 'manga.chapters';
 
     const { data, error, isLoading } = useSWR(
-        route(strRoute, { id: mangaId, limit, offset }),
+        route(strRoute, { id: mangaId, limit, offset, order }),
         (url) => fetch(url).then((res) => res.json()),
     );
 
@@ -30,6 +31,8 @@ export default function MangaViewer({ mangaId, type = 'volumes' }) {
                     setCurrentPage={setCurrentPage}
                     currentPage={currentPage}
                     totalPages={totalPages}
+                    order={order}
+                    setOrder={setOrder}
                 />
             )}
 
