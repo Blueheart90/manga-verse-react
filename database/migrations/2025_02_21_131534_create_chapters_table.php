@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->string('chapter');
             $table->integer('pages');
 
-            $table->unsignedBigInteger('manga_id');
+            $table->uuid('manga_id');
             $table->timestamps();
 
             $table

@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('reading_progress', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('manga_id');
+            $table->uuid('manga_id');
             $table->integer('chapter');
             $table->integer('page');
             $table->timestamps();

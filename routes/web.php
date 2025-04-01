@@ -1,10 +1,11 @@
 <?php
 
-use App\Http\Controllers\MangaController;
-use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
+use App\Http\Controllers\MangaController;
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\ProfileController;
 
 // Route::get('/', function () {
 //     return Inertia::render('Welcome', [
@@ -24,6 +25,13 @@ Route::get('/dashboard', function () {
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
+Route::get('/manga/{manga}/reviews', [
+    ReviewController::class,
+    'ReviewsByManga',
+])
+    ->whereUuid('manga')
+    ->name('manga.reviews');
+
 Route::get('/manga/{id}/chapters', [MangaController::class, 'getMangaChapters'])
     ->whereUuid('id')
     ->name('manga.chapters');
@@ -35,9 +43,6 @@ Route::get('/manga/{id}/volumes', [MangaController::class, 'getMangaVolumes'])
 Route::get('/manga/{id}/{slug?}', [MangaController::class, 'show'])
     ->whereUuid('id')
     ->name('manga.show');
-Route::get('/mangatwo/{id}/{slug?}', [MangaController::class, 'showTwo'])->name(
-    'manga.showtwo'
-);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name(

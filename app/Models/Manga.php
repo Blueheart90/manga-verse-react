@@ -12,7 +12,7 @@ class Manga extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['external_id', 'title', 'cover_url'];
+    protected $fillable = ['title', 'cover_url'];
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class);

@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('user_manga_statuses', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('manga_id');
+            $table->uuid('manga_id');
             $table->string('status');
             $table->timestamps();
 

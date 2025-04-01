@@ -452,7 +452,6 @@ class MangaService
             )
             ->values()
             ->toArray();
-        dump($groupedByVolume);
         return $this->buildApiResponse($chapters, $groupedByVolume);
     }
 

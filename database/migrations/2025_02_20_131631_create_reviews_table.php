@@ -13,8 +13,9 @@ return new class extends Migration {
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('manga_id');
+            $table->uuid('manga_id');
             $table->string('title');
+            $table->boolean('recommended');
             $table->string('content');
             $table->integer('rating');
             $table->timestamps();
