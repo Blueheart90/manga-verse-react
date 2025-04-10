@@ -1,0 +1,102 @@
+/* .ql-toolbar.ql-snow {
+    @apply rounded-t-md border border-plumpPurpleDark;
+}
+
+.ql-toolbar.ql-snow + .ql-container.ql-snow {
+    @apply rounded-b-md border border-plumpPurpleDark;
+}
+
+.ql-snow .ql-stroke,
+.ql-snow .ql-picker {
+    @apply stroke-plumpPurpleDark text-plumpPurpleDark;
+}
+
+.ql-toolbar.ql-snow .ql-bold.ql-active .ql-stroke {
+    @apply stroke-plumpPurpleDark;
+}
+
+.ql-toolbar.ql-snow button.ql-active svg {
+    @apply rounded-sm ring-1 ring-plumpPurpleDark;
+}
+.ql-toolbar.ql-snow button:hover svg {
+    @apply rounded-sm ring-1 ring-plumpPurpleDark;
+}
+.ql-toolbar.ql-snow button:hover .ql-stroke {
+    @apply stroke-plumpPurpleDark;
+}
+
+.ql-toolbar.ql-snow .ql-picker-label:hover {
+    @apply text-plumpPurpleDark;
+} */
+
+/* Estilos generales para la barra de herramientas */
+
+.ql-container.ql-snow {
+    @apply h-36;
+}
+.ql-toolbar.ql-snow {
+    @apply rounded-t-md border border-plumpPurpleDark;
+}
+
+.ql-toolbar.ql-snow + .ql-container.ql-snow {
+    @apply rounded-b-md border border-plumpPurpleDark;
+}
+
+/* Hover sobre los botones */
+.ql-toolbar.ql-snow button:hover svg {
+    @apply rounded-sm bg-plumpPurpleDark/10 ring-1 ring-plumpPurpleDark;
+}
+
+/* Íconos SVG dentro de los botones */
+.ql-snow .ql-stroke,
+.ql-snow .ql-picker,
+.ql-toolbar.ql-snow button svg {
+    @apply stroke-plumpPurpleDark text-plumpPurpleDark;
+}
+
+.ql-snow.ql-toolbar .ql-picker-label:hover {
+    @apply stroke-plumpPurpleDark text-plumpPurpleDark;
+}
+
+.ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke {
+    @apply fill-black stroke-plumpPurpleDark;
+}
+
+.ql-snow.ql-toolbar .ql-picker-label.ql-active,
+.ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke {
+    @apply rounded-sm bg-plumpPurpleDark/20 stroke-plumpPurpleDark text-plumpPurpleDark ring-2 ring-plumpPurpleDark;
+}
+
+.ql-snow.ql-toolbar .ql-picker-item:hover {
+    @apply text-plumpPurpleDark;
+}
+
+/* Íconos SVG dentro de los botones en estado hover */
+.ql-toolbar.ql-snow button:hover .ql-stroke {
+    @apply stroke-plumpPurpleDark;
+}
+
+/* Botones activos (.ql-active) */
+.ql-toolbar.ql-snow button.ql-active svg {
+    @apply rounded-sm bg-plumpPurpleDark/20 ring-2 ring-plumpPurpleDark;
+}
+
+/* Íconos SVG dentro de botones activos */
+.ql-toolbar.ql-snow button.ql-active .ql-stroke {
+    @apply stroke-plumpPurpleDark;
+}
+
+/* Tooltip del editor */
+.ql-tooltip {
+    @apply rounded-sm bg-plumpPurpleDark text-white shadow-md;
+}
+
+/* Preview del tooltip */
+.ql-tooltip .ql-preview {
+    @apply text-white underline;
+}
+
+/* Input del tooltip */
+.ql-tooltip input {
+    @apply rounded-sm border border-plumpPurpleDark p-1;
+}

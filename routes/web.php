@@ -32,6 +32,19 @@ Route::get('/manga/{manga}/reviews', [
     ->whereUuid('manga')
     ->name('manga.reviews');
 
+Route::get('/manga/{manga}/review/user', [
+    ReviewController::class,
+    'userReview',
+])->name('manga.review.user');
+
+Route::post('/manga/{manga}/reviews', [ReviewController::class, 'store'])
+    ->whereUuid('manga')
+    ->name('manga.review.store');
+
+Route::put('/manga/review/{review}', [ReviewController::class, 'update'])->name(
+    'manga.review.update'
+);
+
 Route::get('/manga/{id}/chapters', [MangaController::class, 'getMangaChapters'])
     ->whereUuid('id')
     ->name('manga.chapters');

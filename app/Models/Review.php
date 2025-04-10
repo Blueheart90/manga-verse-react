@@ -14,7 +14,14 @@ class Review extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['manga_id', 'title', 'content', 'rating'];
+    protected $fillable = [
+        'manga_id',
+        'title',
+        'content',
+        'rating',
+        'recommended',
+        'user_id',
+    ];
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

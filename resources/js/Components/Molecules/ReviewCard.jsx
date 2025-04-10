@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import { Rating } from '@smastrom/react-rating';
 import { formatDistanceToNow } from 'date-fns';
 import es from 'date-fns/locale/es';
 import Avatar from '../Atoms/Avatar';
@@ -12,11 +13,11 @@ export default function ReviewCard({ review, className = '' }) {
     return (
         <div
             className={cn(
-                'rounded-md border border-plumpPurpleDark p-4 shadow-md',
+                'divide-y divide-plumpPurpleLight rounded-md border border-plumpPurpleDark p-6 shadow-md',
                 className,
             )}
         >
-            <div className="mb-2 flex justify-between text-plumpPurpleDark">
+            <div className="mb-4 flex items-center justify-between text-plumpPurpleDark">
                 <div className="flex items-center gap-2">
                     <Avatar
                         src={review.user.profile_photo_url}
@@ -34,10 +35,21 @@ export default function ReviewCard({ review, className = '' }) {
                 </div>
                 <Recommended vote={review.recommended} />
             </div>
-            <h6 className="mb-1 font-sintony text-base font-semibold text-plumpPurpleDark">
-                {review.title}
-            </h6>
-            <p className="text-base text-plumpPurpleDark">{review.content}</p>
+            <div>
+                <div className="mb-2 mt-4 flex items-center gap-2">
+                    <Rating className="max-w-28" value={3} readOnly />
+                    <span className="font-sintony text-sm font-bold text-plumpPurpleDark">
+                        {3}/5
+                    </span>
+                </div>
+                <h6 className="mb-1 font-sintony text-base font-semibold text-plumpPurpleDark">
+                    {review.title}
+                </h6>
+
+                <p className="text-base text-plumpPurpleDark">
+                    {review.content}
+                </p>
+            </div>
         </div>
     );
 }

@@ -3,8 +3,7 @@ import { useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import ReviewCard from '../Molecules/ReviewCard';
 
-export default function Reviews({ mangaId }) {
-    const [reviews, setReviews] = useState([]);
+export default function Reviews({ mangaId, reviews, setReviews }) {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
 

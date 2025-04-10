@@ -1,0 +1,45 @@
+.custom-jodit-style .jodit-container:not(.jodit_inline) {
+    @apply border border-plumpPurpleDark;
+}
+.custom-jodit-style .jodit-container:not(.jodit_inline) .jodit-workplace {
+    @apply bg-white;
+}
+
+.custom-jodit-style
+    .jodit-toolbar__box:not(:empty)
+    .jodit-toolbar-editor-collection:after {
+    background-color: #7ddb29;
+}
+
+.custom-jodit-style .jodit-toolbar__box:not(:empty):not(:empty),
+.custom-jodit-style .jodit-status-bar,
+.custom-jodit-style .jodit-xpath a,
+.custom-jodit-style .jodit-status-bar a.jodit-status-bar-link:visited {
+    background-color: #20234f;
+    border: none;
+    color: #ed4d0e;
+    border-radius: 0;
+    /* padding: 2px; */
+}
+
+.custom-jodit-style .jodit-ui-separator {
+    border-left: 0;
+    border-right: 1px solid #7ddb29;
+    cursor: default;
+    margin: 10px 5px;
+    padding: 0;
+}
+
+.custom-jodit-style .jodit-icon,
+.custom-jodit-style .jodit-toolbar-button__trigger,
+.custom-jodit-style
+    .jodit-container:not(.jodit_inline)
+    .jodit-editor__resize
+    svg {
+    fill: #7ddb29;
+}
+.custom-jodit-style .jodit-toolbar-button__button:hover:not([disabled]),
+.custom-jodit-style .jodit-toolbar-button__trigger:hover:not([disabled]),
+.custom-jodit-style .jodit-status-bar .jodit-status-bar__item a:hover {
+    background-color: #12062e;
+}

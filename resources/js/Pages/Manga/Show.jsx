@@ -3,8 +3,9 @@ import Title from '@/Components/Atoms/Title';
 import CharactersManga from '@/Components/Molecules/CharactersManga';
 import DetailsManga from '@/Components/Molecules/DetailsManga';
 import ExpandableText from '@/Components/Molecules/ExpandableText';
+
 import MangaViewer from '@/Components/Organisms/MangaViewer';
-import Reviews from '@/Components/Organisms/Reviews';
+import ReviewSection from '@/Components/Organisms/ReviewSection';
 import Tabs from '@/Components/Organisms/Tabs';
 import PrimaryButton from '@/Components/PrimaryButton';
 import GuestLayout from '@/Layouts/GuestLayout';
@@ -42,6 +43,10 @@ export default function Show() {
             Component: <MangaViewer mangaId={id} type="chapters" />,
         },
     ];
+
+    const handleSubmitReview = (values, resetForm) => {
+        console.log(values);
+    };
     return (
         <GuestLayout className="bg-plumpPurple">
             <Head title={manga.title} />
@@ -106,10 +111,7 @@ export default function Show() {
 
                             <Tabs className="mt-6" tabs={tabs} />
                         </div>
-                        <div className="mt-6">
-                            <h5 className="mb-2 text-lg font-bold">Reseñas</h5>
-                            <Reviews mangaId={id} />
-                        </div>
+                        <ReviewSection id={id} />
                     </div>
                     <div className="flex w-1/4 min-w-72 flex-col px-4 py-10 font-poppins text-sm text-plumpPurpleDark">
                         <div className="mb-6">

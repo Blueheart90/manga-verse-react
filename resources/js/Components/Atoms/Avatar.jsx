@@ -1,3 +1,5 @@
+import { cn } from '@/lib/utils';
+
 export default function Avatar({
     className,
     src,
@@ -6,10 +8,10 @@ export default function Avatar({
 }) {
     return (
         <img
-            className={
+            className={cn(
                 'size-28 rounded-full border-2 border-plumpPurpleDark ' +
-                className
-            }
+                    className,
+            )}
             src={src}
             alt={alt}
             // onError={(e) => (e.currentTarget.src = fallBackSrc)}
