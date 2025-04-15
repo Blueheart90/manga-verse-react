@@ -23,7 +23,7 @@ class ReviewFactory extends Factory
             'title' => fake()->sentence(5),
             'recommended' => fake()->boolean(),
             'content' => fake()->text(100),
-            'rating' => fake()->randomDigitNotZero(),
+            'rating' => fake()->numberBetween(1, 5),
         ];
     }
 }

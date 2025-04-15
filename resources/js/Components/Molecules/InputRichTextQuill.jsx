@@ -7,7 +7,7 @@ import Editor from '../Atoms/Editor';
 
 const Delta = Quill.import('delta');
 
-const InputRichTextQuill = ({ name }) => {
+const InputRichTextQuill = ({ name, isLoading = false }) => {
     const [field, meta, helpers] = useField(name);
     const [lastChange, setLastChange] = useState();
     const [htmlContent, setHtmlContent] = useState('');
@@ -44,6 +44,7 @@ const InputRichTextQuill = ({ name }) => {
                     console.log(range);
                 }}
                 onTextChange={handleChange}
+                readOnly={isLoading}
             />
         </div>
     );

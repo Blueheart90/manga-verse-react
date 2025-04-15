@@ -30,6 +30,8 @@ return new class extends Migration {
                 ->references('id')
                 ->on('mangas')
                 ->onDelete('cascade');
+
+            $table->unique(['user_id', 'manga_id']);
         });
     }
 

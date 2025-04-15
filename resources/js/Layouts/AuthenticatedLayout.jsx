@@ -14,7 +14,7 @@ export default function AuthenticatedLayout({ header, children }) {
             <Header user={user} />
 
             <main>
-                <Toaster />
+                <Toaster richColors />
                 {children}
             </main>
         </div>

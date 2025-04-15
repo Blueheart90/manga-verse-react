@@ -4,6 +4,7 @@ import { ErrorMessage, Formik } from 'formik';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import Like from '../Atoms/SvgIcons/Like';
+import LoadingCircle from '../Atoms/SvgIcons/LoadingCircle';
 import InputRichTextQuill from '../Molecules/InputRichTextQuill';
 import MyRadioGroup from '../Molecules/MyRadioGroup';
 import RatingInput from '../Molecules/RatingInput';
@@ -35,9 +36,6 @@ export default function ReviewForm({ setReviews, reviews }) {
         }
     }, [auth.user, id]);
 
-    const handleTest = (values) => {
-        console.log('test', values);
-    };
     const handleSubmitReview = (values, { resetForm }) => {
         setIsLoading(true);
         const dataForm = {
@@ -50,21 +48,25 @@ export default function ReviewForm({ setReviews, reviews }) {
             rating: values.rating,
         };
 
-        toast.success('This is a success toast');
         axios
             .post(route('manga.review.store', { manga: id }), dataForm)
             .then((res) => {
                 setTimeout(() => {
                     setReviews([...reviews, res.data.newReview]);
+                    setOldReview(res.data.newReview);
                     toast.success(res.data.message, {
                         position: 'bottom-left',
                         duration: 4000,
                     });
-
-                    console.log({ res });
-
                     setIsLoading(false);
                 }, 500);
+            })
+            .catch((error) => {
+                toast.error(error.response.data.message, {
+                    position: 'bottom-left',
+                    duration: 4000,
+                });
+                setIsLoading(false);
             });
         console.log(values);
     };
@@ -84,12 +86,15 @@ export default function ReviewForm({ setReviews, reviews }) {
                     }
                     return review;
                 });
-                setReviews(updatedReviews);
-                toast.success(res.data.message, {
-                    position: 'bottom-left',
-                    duration: 4000,
-                });
-                setIsLoading(false);
+
+                setTimeout(() => {
+                    setReviews(updatedReviews);
+                    toast.success(res.data.message, {
+                        position: 'bottom-left',
+                        duration: 4000,
+                    });
+                    setIsLoading(false);
+                }, 5000);
             })
             .catch((error) => {
                 toast.error(error.response.data.message, {
@@ -156,21 +161,29 @@ export default function ReviewForm({ setReviews, reviews }) {
                                     ]}
                                     label="¿Lo recomiendas?"
                                     name="recommended"
+                                    disabled={isLoading}
                                 />
-                                <RatingInput name="rating" />
+                                <RatingInput
+                                    name="rating"
+                                    disabled={isLoading}
+                                />
                             </div>
                             <input
-                                className="w-full rounded-md border-plumpPurpleDark text-plumpPurpleDark"
+                                className="w-full rounded-md border-plumpPurpleDark text-plumpPurpleDark disabled:bg-plumpPurpleLight disabled:text-gray-500"
                                 type="text"
                                 placeholder="Titulo"
                                 name="title"
                                 value={values.title}
+                                disabled={isLoading}
                                 onChange={(e) =>
                                     setFieldValue('title', e.target.value)
                                 }
                             />
 
-                            <InputRichTextQuill name="content" />
+                            <InputRichTextQuill
+                                name="content"
+                                isLoading={isLoading}
+                            />
                             <div className="flex justify-end">
                                 {Object.keys(oldReview).length ? (
                                     <PrimaryButton
@@ -181,10 +194,18 @@ export default function ReviewForm({ setReviews, reviews }) {
                                                 oldReview,
                                             )
                                         }
-                                        disabled={!(dirty && isValid)}
-                                        className="text-base normal-case"
+                                        // disabled={!(dirty && isValid)}
+                                        disabled={!dirty}
+                                        className="flex text-base normal-case"
                                     >
-                                        Actualizar
+                                        {isLoading ? (
+                                            <>
+                                                Actualizando
+                                                <LoadingCircle className="ml-2 size-6" />
+                                            </>
+                                        ) : (
+                                            'Actualizar'
+                                        )}
                                     </PrimaryButton>
                                 ) : (
                                     <PrimaryButton

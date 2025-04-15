@@ -35,8 +35,8 @@ const customStyles = {
     inactiveStrokeColor: 'yellow',
     activeStrokeColor: 'yellow',
 };
-export default function RatingInput(props) {
-    const [field, meta, helpers] = useField(props.name);
+export default function RatingInput({ name, disabled = false }) {
+    const [field, meta, helpers] = useField(name);
     const [hoveredRating, setHoveredRating] = useState(0);
     return (
         <div className="mb-4 flex w-full max-w-32 flex-col items-center gap-2">
@@ -47,12 +47,8 @@ export default function RatingInput(props) {
                     helpers.setValue(value);
                 }}
                 onHoverChange={setHoveredRating}
+                isDisabled={disabled}
             />
-
-            {/* <div>
-                <div>{`Selected: ${getRating(rating)}`}</div>
-                <div>{`Hovered: ${getRating(hoveredRating)}`}</div>
-            </div> */}
         </div>
     );
 }

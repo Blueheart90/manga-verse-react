@@ -25,6 +25,7 @@ const Editor = forwardRef(
             );
             const quill = new Quill(editorContainer, {
                 theme: 'snow',
+                readOnly: readOnly,
             });
 
             ref.current = quill;

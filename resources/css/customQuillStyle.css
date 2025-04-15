@@ -31,6 +31,9 @@
 
 /* Estilos generales para la barra de herramientas */
 
+.ql-container.ql-snow.ql-disabled {
+    @apply bg-plumpPurpleLight text-gray-500;
+}
 .ql-container.ql-snow {
     @apply h-36;
 }

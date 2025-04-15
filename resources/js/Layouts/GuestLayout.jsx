@@ -10,7 +10,7 @@ export default function GuestLayout({ children, className = '' }) {
         <div className={cn('min-h-screen bg-plumpPurple text-xl', className)}>
             <Header user={auth.user} />
             <main>
-                <Toaster />
+                <Toaster richColors />
                 {children}
             </main>
         </div>
