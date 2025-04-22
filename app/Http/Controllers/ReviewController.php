@@ -9,11 +9,22 @@ use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
 {
-    public function ReviewsByManga(Manga $manga, Request $request)
+    public function ReviewsByManga($mangaId, Request $request)
     {
         $page = $request->input('page', 1);
         $limit = $request->input('limit', 10);
         $offset = ($page - 1) * $limit;
+
+        $manga = Manga::find($mangaId);
+        if (!$manga) {
+            return response()->json([
+                'data' => [],
+                'hasMore' => false,
+                'page' => (int) $page,
+                'limit' => (int) $limit,
+                'total' => 0,
+            ]);
+        }
 
         $reviews = $manga
             ->reviews()

@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import { Link } from '@inertiajs/react';
 import { useState } from 'react';
 import Avatar from '../Atoms/Avatar';
 import Bars from '../Atoms/SvgIcons/Bars';
@@ -41,7 +42,10 @@ export default function Header({ user, className }) {
                             </button>
                         </div>
                         {/* logo */}
-                        <div className="flex flex-col items-center justify-center">
+                        <Link
+                            href={route('home')}
+                            className="flex flex-col items-center justify-center"
+                        >
                             <p className="font-bubblegum text-3xl font-semibold text-white">
                                 Manga
                                 <span className="text-turquoise">verse</span>
@@ -49,7 +53,7 @@ export default function Header({ user, className }) {
                             <span className="text-sm font-semibold text-turquoise">
                                 マンガバース
                             </span>
-                        </div>
+                        </Link>
 
                         <div className="hidden items-center space-x-8 sm:-my-px sm:ml-10 lg:flex">
                             {navLinks.map((link, index) => (

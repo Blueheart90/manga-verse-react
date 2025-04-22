@@ -10,6 +10,8 @@ export default function Reviews({ mangaId, reviews, setReviews }) {
     const [isLoading, setIsLoading] = useState(false);
     const [hasLoaded, setHasLoaded] = useState(false);
 
+    // console.log({ reviews });
+
     // Carga inicial
     useEffect(() => {
         const fetchInitialReviews = async () => {
@@ -22,6 +24,7 @@ export default function Reviews({ mangaId, reviews, setReviews }) {
             setIsLoading(false);
             setHasLoaded(true);
             setPage(2);
+            console.log({ response });
         };
         fetchInitialReviews();
     }, [mangaId, setReviews]);

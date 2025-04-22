@@ -1,3 +1,4 @@
+import { customStyles } from '@/lib/ratingStyles';
 import { cn } from '@/lib/utils';
 import { Rating } from '@smastrom/react-rating';
 import { formatDistanceToNow } from 'date-fns';
@@ -38,6 +39,7 @@ export default function ReviewCard({ review, className = '' }) {
             <div>
                 <div className="mb-2 mt-4 flex items-center gap-2">
                     <Rating
+                        itemStyles={customStyles}
                         className="max-w-28"
                         value={review.rating}
                         readOnly
