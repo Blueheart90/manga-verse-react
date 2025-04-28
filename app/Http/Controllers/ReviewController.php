@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Manga;
 use App\Models\Review;
 use Illuminate\Http\Request;
+use Mews\Purifier\Facades\Purifier;
 use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
@@ -68,6 +69,8 @@ class ReviewController extends Controller
             ]
         );
 
+        $validatedData['content'] = Purifier::clean($validatedData['content']);
+
         $review = $manga->reviews()->create([
             'content' => $validatedData['content'],
             'recommended' => $validatedData['recommended'],
@@ -92,6 +95,9 @@ class ReviewController extends Controller
         ]);
 
         try {
+            $validatedData['content'] = Purifier::clean(
+                $validatedData['content']
+            );
             $review->update([
                 'content' => $validatedData['content'],
                 'recommended' => $validatedData['recommended'],

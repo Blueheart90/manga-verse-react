@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
+use Inertia\Response;
+use Illuminate\Http\Request;
 use GuzzleHttp\Promise\Utils;
 use App\Services\MangaService;
 use App\Services\MangaServicetest;
-use App\ViewModels\IndexMangaViewModel;
+use Mews\Purifier\Facades\Purifier;
 use App\ViewModels\ShowMangaViewModel;
-use Illuminate\Http\Request;
-use Inertia\Response;
+use App\ViewModels\IndexMangaViewModel;
 
 class MangaController extends Controller
 {
@@ -88,7 +89,8 @@ class MangaController extends Controller
         return Inertia::render('Manga/ShowTwo', $mangaShowViewModel);
     }
 
-    // public function test(): Response
+    // public function test()
     // {
+
     // }
 }

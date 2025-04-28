@@ -3,6 +3,7 @@ import { cn } from '@/lib/utils';
 import { Rating } from '@smastrom/react-rating';
 import { formatDistanceToNow } from 'date-fns';
 import es from 'date-fns/locale/es';
+import DOMPurify from 'dompurify';
 import Avatar from '../Atoms/Avatar';
 import Recommended from './Recommended';
 
@@ -11,6 +12,12 @@ export default function ReviewCard({ review, className = '' }) {
         addSuffix: true,
         locale: es,
     });
+
+    const createMarkup = (html) => {
+        return {
+            __html: DOMPurify.sanitize(html),
+        };
+    };
     return (
         <div
             className={cn(
@@ -52,9 +59,10 @@ export default function ReviewCard({ review, className = '' }) {
                     {review.title}
                 </h6>
 
-                <p className="text-base text-plumpPurpleDark">
-                    {review.content}
-                </p>
+                <p
+                    className="text-base text-plumpPurpleDark"
+                    dangerouslySetInnerHTML={createMarkup(review.content)}
+                ></p>
             </div>
         </div>
     );
