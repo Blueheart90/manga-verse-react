@@ -6,6 +6,7 @@ use Illuminate\Foundation\Application;
 use App\Http\Controllers\MangaController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserMangaStatusController;
 
 // Route::get('/', function () {
 //     return Inertia::render('Welcome', [
@@ -18,6 +19,22 @@ use App\Http\Controllers\ProfileController;
 
 Route::get('/', [MangaController::class, 'home'])->name('home');
 Route::get('/test', [MangaController::class, 'test'])->name('test');
+
+Route::post('/manga/{manga}/status', [
+    UserMangaStatusController::class,
+    'store',
+])
+    ->whereUuid('manga')
+    ->name('manga.status.store');
+
+Route::get('/manga/{manga}/status', [UserMangaStatusController::class, 'show'])
+    ->whereUuid('manga')
+    ->name('manga.status.show');
+
+Route::delete('/manga/status/{status}', [
+    UserMangaStatusController::class,
+    'delete',
+])->name('manga.status.delete');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

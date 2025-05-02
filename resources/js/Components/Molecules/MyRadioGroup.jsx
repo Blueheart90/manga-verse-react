@@ -19,14 +19,14 @@ const MyRadioGroup = ({
             }}
             className={cn('flex items-center gap-4', className)}
         >
-            <p className="text-base text-plumpPurpleDark">{label}</p>
-            <div className="inline-flex overflow-hidden rounded-md border border-plumpPurple">
+            {label && <p className="text-base text-plumpPurpleDark">{label}</p>}
+            <div className="inline-flex h-9 overflow-hidden rounded-md border border-plumpPurple">
                 {radioOptions.map((option, index) => (
                     <Field key={option.name + index} disabled={disabled}>
                         <Radio
                             value={option.value}
                             className={cn(
-                                `flex cursor-pointer gap-2 px-3 py-1 text-base text-plumpPurpleDark outline-none data-[checked]:bg-plumpPurpleDark data-[checked]:text-white`,
+                                `flex h-full w-20 cursor-pointer gap-2 px-3 py-1 text-base text-plumpPurpleDark outline-none data-[checked]:bg-plumpPurpleDark data-[checked]:text-white`,
                             )}
                         >
                             {option.icon ? option.icon : null}

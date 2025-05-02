@@ -54,6 +54,11 @@ class User extends Authenticatable
         return $this->hasMany(Review::class);
     }
 
+    public function userMangaStatus(): HasMany
+    {
+        return $this->hasMany(UserMangaStatus::class);
+    }
+
     public function ChapterComments(): HasMany
     {
         return $this->hasMany(ChapterComment::class);

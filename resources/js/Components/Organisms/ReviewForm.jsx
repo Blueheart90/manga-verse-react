@@ -59,7 +59,7 @@ export default function ReviewForm({ setReviews, reviews }) {
                         duration: 4000,
                     });
                     setIsLoading(false);
-                }, 500);
+                }, 400);
             })
             .catch((error) => {
                 toast.error(error.response.data.message, {

@@ -15,6 +15,8 @@ return new class extends Migration {
             $table->unsignedBigInteger('user_id');
             $table->uuid('manga_id');
             $table->string('status');
+            $table->boolean('recommended')->nullable();
+            $table->string('notes')->nullable();
             $table->timestamps();
 
             $table
@@ -27,6 +29,7 @@ return new class extends Migration {
                 ->references('id')
                 ->on('mangas')
                 ->onDelete('cascade');
+            $table->unique(['user_id', 'manga_id']);
         });
     }
 

@@ -120,10 +120,7 @@ class ReviewController extends Controller
 
     public function userReview(Manga $manga)
     {
-        $review = $manga
-            ->reviews()
-            ->where('user_id', auth()->id())
-            ->first();
+        $review = $manga->reviews()->where('user_id', Auth::id())->first();
 
         return response()->json($review);
     }

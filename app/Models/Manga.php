@@ -20,6 +20,11 @@ class Manga extends Model
         return $this->hasMany(Review::class);
     }
 
+    public function userMangaStatus(): HasMany
+    {
+        return $this->hasMany(UserMangaStatus::class);
+    }
+
     public function chapters(): HasMany
     {
         return $this->hasMany(Chapter::class);
