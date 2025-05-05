@@ -14,7 +14,7 @@ import PrimaryButton from '../PrimaryButton';
 import MyListBox from './MyListBox';
 import MyRadioGroup from './MyRadioGroup';
 
-export default function StatusMangaForm() {
+export default function LibraryForm() {
     const statusOptions = [
         {
             id: 0,
@@ -53,7 +53,7 @@ export default function StatusMangaForm() {
         const loadUserStatus = async () => {
             try {
                 const response = await axios.get(
-                    route('manga.status.show', { manga: id }),
+                    route('manga.library.show', { manga: id }),
                 );
                 setMangaStatus(response.data.data);
             } catch (error) {
@@ -78,7 +78,7 @@ export default function StatusMangaForm() {
             return;
         }
         axios
-            .post(route('manga.status.store', { manga: id }), {
+            .post(route('manga.library.store', { manga: id }), {
                 manga_title: title,
                 cover_art,
                 ...values,
@@ -101,7 +101,7 @@ export default function StatusMangaForm() {
 
     const handleDelete = (id) => {
         axios
-            .delete(route('manga.status.delete', { status: id }))
+            .delete(route('manga.library.delete', { library: id }))
             .then(() => {
                 setMangaStatus(null);
                 setModal(false);

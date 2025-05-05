@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Enums\StatusEnum;
 use Illuminate\Database\Eloquent\Model;
 
-class UserMangaStatus extends Model
+class Library extends Model
 {
     protected $fillable = [
         'user_id',

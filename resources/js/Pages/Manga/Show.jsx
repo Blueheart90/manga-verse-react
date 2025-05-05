@@ -3,7 +3,7 @@ import Title from '@/Components/Atoms/Title';
 import CharactersManga from '@/Components/Molecules/CharactersManga';
 import DetailsManga from '@/Components/Molecules/DetailsManga';
 import ExpandableText from '@/Components/Molecules/ExpandableText';
-import StatusMangaForm from '@/Components/Molecules/StatusMangaForm';
+import LibraryForm from '@/Components/Molecules/LibraryForm';
 
 import MangaViewer from '@/Components/Organisms/MangaViewer';
 import ReviewSection from '@/Components/Organisms/ReviewSection';
@@ -75,7 +75,7 @@ export default function Show() {
                                 alt="poster"
                             />
 
-                            <StatusMangaForm />
+                            <LibraryForm />
                         </figure>
                     </div>
                     <div className="flex flex-1 flex-col font-poppins">
