@@ -67,17 +67,26 @@ export default function StatusMangaForm() {
     }, [auth.user, id]);
 
     const handleSubmit = (values) => {
+        if (!auth.user) {
+            toast.error(
+                'Tienes que iniciar sesión para agregar a la biblioteca',
+                {
+                    position: 'bottom-left',
+                    duration: 4000,
+                },
+            );
+            return;
+        }
         axios
             .post(route('manga.status.store', { manga: id }), {
                 manga_title: title,
                 cover_art,
-                user_id: auth.user.id,
                 ...values,
             })
             .then((res) => {
                 setMangaStatus(res.data.data);
                 setModal(false);
-                toast.success('Status updated successfully', {
+                toast.success(res.data.message, {
                     position: 'bottom-left',
                     duration: 4000,
                 });
@@ -96,7 +105,7 @@ export default function StatusMangaForm() {
             .then(() => {
                 setMangaStatus(null);
                 setModal(false);
-                toast.success('Status deleted successfully', {
+                toast.success('Entrada de biblioteca eliminada', {
                     position: 'bottom-left',
                     duration: 4000,
                 });

@@ -31,10 +31,20 @@ class UserMangaStatusController extends Controller
 
     public function store(Request $request, $manga)
     {
+        if (!Auth::check()) {
+            return response()->json(
+                [
+                    'code' => 401,
+                    'message' =>
+                        'Tienes que iniciar sesión para agregar a la biblioteca',
+                    'data' => null,
+                ],
+                401
+            );
+        }
         $request->validate([
             'manga_title' => 'required',
             'cover_art' => 'required',
-            'user_id' => 'required',
             'status' => 'required',
             'recommended' => 'nullable',
             'notes' => 'nullable',
@@ -52,7 +62,7 @@ class UserMangaStatusController extends Controller
 
         $status = UserMangaStatus::updateOrCreate(
             [
-                'user_id' => $request->user_id,
+                'user_id' => Auth::id(),
                 'manga_id' => $manga->id,
             ],
             [
@@ -64,7 +74,7 @@ class UserMangaStatusController extends Controller
 
         return response()->json([
             'code' => 200,
-            'message' => 'Status added successfully',
+            'message' => 'Entrada de biblioteca agregada',
             'data' => $status,
         ]);
     }
@@ -74,7 +84,8 @@ class UserMangaStatusController extends Controller
         $status->delete();
 
         return response()->json([
-            'message' => 'Status deleted successfully',
+            'code' => 200,
+            'message' => 'Entrada de biblioteca eliminada',
         ]);
     }
 }
