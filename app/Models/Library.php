@@ -18,4 +18,9 @@ class Library extends Model
     protected $cast = [
         'status' => StatusEnum::class,
     ];
+
+    public function manga()
+    {
+        return $this->belongsTo(Manga::class);
+    }
 }

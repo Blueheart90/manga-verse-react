@@ -213,28 +213,6 @@ export default function LibraryForm() {
                                     options={statusOptions}
                                 />
 
-                                {/* <label
-                                    className="col-span-1 text-base text-plumpPurpleDark"
-                                    htmlFor="progress"
-                                >
-                                    Capítulos Leidos
-                                </label>
-                                <div className="col-span-2 flex h-9 items-center overflow-hidden rounded-md ring-1 ring-plumpPurple">
-                                    <input
-                                        className="h-full w-20 border-none text-base text-plumpPurpleDark"
-                                        type="number"
-                                        name="progress"
-                                        value={values.progress}
-                                        onChange={(e) => {
-                                            const value = e.target.value;
-                                            setFieldValue('progress', value);
-                                        }}
-                                    />
-                                    <span className="flex h-full w-full items-center justify-center bg-plumpPurpleDark px-2 text-white">
-                                        de {lastChapter} capítulos
-                                    </span>
-                                </div> */}
-
                                 <label
                                     className="col-span-1 text-base text-plumpPurpleDark"
                                     htmlFor="recommended"

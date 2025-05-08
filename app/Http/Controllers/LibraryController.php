@@ -4,17 +4,52 @@ namespace App\Http\Controllers;
 
 use App\Models\Manga;
 use App\Models\Library;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class LibraryController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(User $user, Request $request)
     {
-        //
+        $status = $request->query('status');
+        $defaultStatus = [
+            'current' => 0,
+            'want to read' => 0,
+            'completed' => 0,
+            'on hold' => 0,
+            'dropped' => 0,
+            're-reading' => 0,
+        ];
+
+        $statusCounts = $user
+            ->libraries()
+            ->selectRaw('status, COUNT(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status')
+            ->toArray();
+
+        $statusCounts = array_replace($defaultStatus, $statusCounts);
+
+        return Inertia::render('Library/Index', [
+            'data' => $user
+                ->libraries()
+                ->with('manga')
+                ->when($status, fn($query) => $query->where('status', $status))
+                ->orderBy('updated_at', 'desc')
+                ->get(),
+            'filters' => request()->only([
+                'search',
+                'status',
+                'sort',
+                'direction',
+            ]),
+            'statusCounts' => $statusCounts,
+        ]);
     }
 
     /**

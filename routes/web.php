@@ -21,6 +21,9 @@ Route::get('/', [MangaController::class, 'home'])->name('home');
 Route::get('/test', [MangaController::class, 'test'])->name('test');
 
 // Library
+Route::get('/users/{user}/library', [LibraryController::class, 'index'])->name(
+    'users.library.index'
+);
 
 Route::post('/manga/{manga}/library', [LibraryController::class, 'store'])
     ->whereUuid('manga')
