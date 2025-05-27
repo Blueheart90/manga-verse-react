@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils';
 import { router, usePage } from '@inertiajs/react';
 
 export default function StatusList({ statusColors, data, className }) {
-    const { auth, filters } = usePage().props;
+    const { filters, user } = usePage().props;
 
     console.log({ filters });
     const statusCountsArray = Object.entries(data).map(([status, count]) => ({
@@ -10,6 +10,7 @@ export default function StatusList({ statusColors, data, className }) {
         count,
     }));
 
+    console.log({ user });
     return (
         <div>
             <ul
@@ -27,7 +28,7 @@ export default function StatusList({ statusColors, data, className }) {
                         onClick={() =>
                             router.get(
                                 route('users.library.index', {
-                                    user: auth.user.id,
+                                    user: user.id,
                                 }),
                             )
                         }
@@ -53,7 +54,7 @@ export default function StatusList({ statusColors, data, className }) {
                             onClick={() =>
                                 router.get(
                                     route('users.library.index', {
-                                        user: auth.user.id,
+                                        user: user.id,
                                         status: item.status,
                                     }),
                                 )

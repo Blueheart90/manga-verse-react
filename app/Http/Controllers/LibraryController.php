@@ -36,6 +36,7 @@ class LibraryController extends Controller
         $statusCounts = array_replace($defaultStatus, $statusCounts);
 
         return Inertia::render('Library/Index', [
+            'user' => $user->only('id', 'name'),
             'data' => $user
                 ->libraries()
                 ->with('manga')

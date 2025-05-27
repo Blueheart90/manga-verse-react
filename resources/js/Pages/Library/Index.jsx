@@ -5,7 +5,7 @@ import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, usePage } from '@inertiajs/react';
 
 export default function Index() {
-    const { data, statusCounts } = usePage().props;
+    const { data, statusCounts, user } = usePage().props;
 
     const statusColors = {
         current: 'bg-green-100 text-green-800', // Verde: activo/en progreso
@@ -24,7 +24,10 @@ export default function Index() {
             <section className="my-10 bg-plumpPurpleLight">
                 <div className="container py-20">
                     <Title level={2} className="text-plumpPurpleDark">
-                        Biblioteca
+                        Biblioteca de{' '}
+                        <span className="bg-turquoise px-2 text-plumpPurpleDark">
+                            {user.name}
+                        </span>
                     </Title>
                     <div className="flex gap-x-4">
                         {/* <DataTable
