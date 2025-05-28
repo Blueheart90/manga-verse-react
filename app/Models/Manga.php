@@ -14,7 +14,7 @@ class Manga extends Model
      */
     protected $keyType = 'string'; // Indica que la clave primaria es un string (UUID)
     public $incrementing = false; // Desactiva el autoincremento
-    protected $fillable = ['id', 'title', 'cover_url'];
+    protected $fillable = ['id', 'title', 'cover_url', 'slug'];
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class);

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Manga;
+use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
@@ -33,6 +34,7 @@ class MangaSeeder extends Seeder
                 'id' => $manga['id'],
                 'title' => $manga['title'],
                 'cover_url' => $manga['cover_url'],
+                'slug' => Str::slug($manga['title']),
             ]);
         }
     }

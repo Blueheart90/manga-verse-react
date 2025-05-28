@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use Inertia\Inertia;
 use App\Models\Manga;
 use App\Models\Library;
-use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
 
 class LibraryController extends Controller
 {
@@ -92,6 +93,7 @@ class LibraryController extends Controller
             [
                 'title' => $request->manga_title,
                 'cover_url' => $request->cover_art,
+                'slug' => Str::slug($request->manga_title),
             ]
         );
 
