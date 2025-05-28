@@ -11,7 +11,6 @@ export default function StatusList({ statusColors, data, className }) {
     }));
 
     console.log({ user });
-    // TODO: Agregar func de eliminar
     // TODO: Agregar func de editar
     return (
         <div>

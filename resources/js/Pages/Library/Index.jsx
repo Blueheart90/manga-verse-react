@@ -5,7 +5,7 @@ import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, usePage } from '@inertiajs/react';
 
 export default function Index() {
-    const { data, statusCounts, user } = usePage().props;
+    const { data, statusCounts, owner, auth } = usePage().props;
 
     const statusColors = {
         current: 'bg-green-100 text-green-800', // Verde: activo/en progreso
@@ -15,7 +15,7 @@ export default function Index() {
         dropped: 'bg-red-100 text-red-800', // Rojo: abandonado
         're-reading': 'bg-teal-100 text-teal-800', // Turquesa: revisión/repetición
     };
-    console.log({ data, statusCounts });
+    // console.log({ auth, owner });
     const headers = ['Titulo del manga', 'Recomendado', 'Estado'];
 
     return (
@@ -26,7 +26,7 @@ export default function Index() {
                     <Title level={2} className="text-plumpPurpleDark">
                         Biblioteca de{' '}
                         <span className="bg-turquoise px-2 text-plumpPurpleDark">
-                            {user.name}
+                            {owner.name}
                         </span>
                     </Title>
                     <div className="flex gap-x-4">

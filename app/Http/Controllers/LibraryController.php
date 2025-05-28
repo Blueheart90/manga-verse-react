@@ -37,7 +37,7 @@ class LibraryController extends Controller
         $statusCounts = array_replace($defaultStatus, $statusCounts);
 
         return Inertia::render('Library/Index', [
-            'user' => $user->only('id', 'name'),
+            'owner' => $user->only('id', 'name'),
             'data' => $user
                 ->libraries()
                 ->with('manga')
@@ -152,7 +152,42 @@ class LibraryController extends Controller
      */
     public function update(Request $request, Library $library)
     {
-        //
+        if (!Auth::check()) {
+            return response()->json(
+                [
+                    'code' => 401,
+                    'message' =>
+                        'Tienes que iniciar sesión para actualizar la biblioteca',
+                    'data' => null,
+                ],
+                401
+            );
+        }
+
+        if ($library->user_id !== Auth::id()) {
+            return response()->json(
+                [
+                    'code' => 401,
+                    'message' =>
+                        'No tienes permiso para actualizar esta entrada de biblioteca',
+                    'data' => null,
+                ],
+                401
+            );
+        }
+
+        $request->validate([
+            'status' => 'required',
+            'recommended' => 'nullable',
+            'notes' => 'nullable',
+        ]);
+        $library->update($request->all());
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'Entrada de biblioteca actualizada',
+            'data' => $library->load('manga'),
+        ]);
     }
 
     /**

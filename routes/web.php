@@ -38,6 +38,11 @@ Route::delete('/manga/library/{library}', [
     'destroy',
 ])->name('manga.library.delete');
 
+Route::put('/manga/library/{library}', [
+    LibraryController::class,
+    'update',
+])->name('manga.library.update');
+
 // Review
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
