@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils';
 import { router, usePage } from '@inertiajs/react';
 
 export default function StatusList({ statusColors, data, className }) {
-    const { filters, user } = usePage().props;
+    const { filters, owner } = usePage().props;
 
     console.log({ filters });
     const statusCountsArray = Object.entries(data).map(([status, count]) => ({
@@ -10,7 +10,7 @@ export default function StatusList({ statusColors, data, className }) {
         count,
     }));
 
-    console.log({ user });
+    console.log({ owner });
     // TODO: Agregar func de editar
     return (
         <div>
@@ -29,7 +29,7 @@ export default function StatusList({ statusColors, data, className }) {
                         onClick={() =>
                             router.get(
                                 route('users.library.index', {
-                                    user: user.id,
+                                    user: owner.id,
                                 }),
                             )
                         }
@@ -55,7 +55,7 @@ export default function StatusList({ statusColors, data, className }) {
                             onClick={() =>
                                 router.get(
                                     route('users.library.index', {
-                                        user: user.id,
+                                        user: owner.id,
                                         status: item.status,
                                     }),
                                 )
