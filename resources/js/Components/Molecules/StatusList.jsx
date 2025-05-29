@@ -9,9 +9,8 @@ export default function StatusList({ statusColors, data, className }) {
         status,
         count,
     }));
+    console.log({ data, statusCountsArray });
 
-    console.log({ owner });
-    // TODO: Agregar func de editar
     return (
         <div>
             <ul

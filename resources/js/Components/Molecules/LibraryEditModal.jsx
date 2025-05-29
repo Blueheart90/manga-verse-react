@@ -2,6 +2,7 @@ import { cn } from '@/lib/utils';
 import statusFormSchema from '@/Schemas/statusFormSchema';
 import { Textarea } from '@headlessui/react';
 import { Formik } from 'formik';
+import { useState } from 'react';
 import Like from '../Atoms/SvgIcons/Like';
 import Trash from '../Atoms/SvgIcons/Trash';
 import XMark from '../Atoms/SvgIcons/XMark';
@@ -17,6 +18,7 @@ export default function LibraryEditModal({
     handleSubmit,
     handleDelete,
 }) {
+    const [deleteModal, setDeleteModal] = useState(false);
     const statusOptions = [
         {
             id: 0,
@@ -142,7 +144,9 @@ export default function LibraryEditModal({
                             <div className="col-span-3 mt-4 flex justify-between border-t border-plumpPurple/25 pt-4">
                                 <button
                                     type="button"
-                                    onClick={() => handleDelete()}
+                                    onClick={() => {
+                                        setDeleteModal(true);
+                                    }}
                                     className="group mr-2 rounded-md border border-plumpPurple p-2 hover:border-red-500"
                                 >
                                     <Trash className="size-6 text-plumpPurple group-hover:text-red-500" />
@@ -159,6 +163,39 @@ export default function LibraryEditModal({
                     )}
                 </Formik>
             </div>
+            <Modal
+                show={deleteModal}
+                onClose={() => {
+                    setDeleteModal(false);
+                }}
+            >
+                <div className="relative flex flex-col items-center gap-4 overflow-hidden rounded-3xl bg-white px-14 py-8">
+                    <h2 className="text-2xl font-bold text-plumpPurpleDark">
+                        ¿Deseas eliminar esta entrada de biblioteca?
+                    </h2>
+                    <p className="text-sm text-plumpPurpleDark">
+                        Esta acción no se puede deshacer.
+                    </p>
+                    <div className="flex items-center justify-center gap-4">
+                        <button
+                            onClick={() => setModal(false)}
+                            className="rounded-md bg-plumpPurple px-4 py-2 text-white transition-colors duration-200 hover:bg-plumpPurple/80"
+                        >
+                            Cancelar
+                        </button>
+                        <button
+                            onClick={() => {
+                                handleDelete(libraryItem.id);
+                                setDeleteModal(false);
+                                setModal(false);
+                            }}
+                            className="rounded-md bg-red-500 px-4 py-2 text-white transition-colors duration-200 hover:bg-red-600"
+                        >
+                            Eliminar
+                        </button>
+                    </div>
+                </div>
+            </Modal>
         </Modal>
     );
 }

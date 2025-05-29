@@ -47,7 +47,6 @@ class ProfileController extends Controller
         return Redirect::route('profile.edit');
     }
 
-    // TODO crear función para eliminar imagen
     public function deletePhoto(Request $request): RedirectResponse
     {
         $request->user()->deleteProfilePhoto();

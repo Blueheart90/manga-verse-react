@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { Link, usePage } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import axios from 'axios';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -56,20 +56,19 @@ export default function DataTableTest({
             });
     };
 
-    const handleDelete = async () => {
-        if (!itemToDelete) return;
+    const handleDelete = async (id) => {
+        if (!id) return;
 
         try {
-            await axios.delete(
-                route('manga.library.delete', { library: itemToDelete }),
-            );
-            setItems(items.filter((item) => item.id !== itemToDelete));
+            await axios.delete(route('manga.library.delete', { library: id }));
+            setItems(items.filter((item) => item.id !== id));
             toast.success('Entrada de biblioteca eliminada', {
                 position: 'bottom-left',
                 duration: 4000,
             });
             setModal(false);
             setItemToDelete(null);
+            router.reload();
         } catch (error) {
             toast.error(
                 error.response?.data?.message || 'Error al eliminar la entrada',
@@ -269,7 +268,7 @@ export default function DataTableTest({
                             Cancelar
                         </button>
                         <button
-                            onClick={() => handleDelete()}
+                            onClick={() => handleDelete(itemToDelete)}
                             className="rounded-md bg-red-500 px-4 py-2 text-white transition-colors duration-200 hover:bg-red-600"
                         >
                             Eliminar
@@ -283,6 +282,7 @@ export default function DataTableTest({
                 libraryItem={itemToEdit}
                 handleSubmit={handleUpdate}
                 handleDelete={handleDelete}
+                setItemToDelete={setItemToDelete}
             />
         </div>
     );
